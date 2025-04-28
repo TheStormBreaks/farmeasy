@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import ViewTrainingProgramsFarmer from '@/components/ViewTrainingProgramsFarmer'; // Create this component
 import { GraduationCap, History } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import ViewMyRegistrations from '@/components/ViewMyRegistrations';
+import ViewMyRegistrations from '@/components/ViewMyRegistrations'; // Create this component
 
 export const metadata: Metadata = {
     title: 'Training Programs | Farmer Portal',

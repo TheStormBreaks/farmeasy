@@ -2,7 +2,7 @@
 // src/components/ViewTrainingProgramsKVK.tsx
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTrainingPrograms } from '@/hooks/useTrainingPrograms';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';

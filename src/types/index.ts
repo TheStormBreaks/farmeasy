@@ -2,6 +2,7 @@
 
 
 
+
 export type UserType = 'KVK' | 'FARMER' | 'SUPPLY' | null;
 
 export interface Announcement {

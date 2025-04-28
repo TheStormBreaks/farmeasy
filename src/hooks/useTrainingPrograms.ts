@@ -15,7 +15,9 @@ import {
     doc,
     where,
     serverTimestamp,
-    getDocs // Import getDocs for querying registrations
+    getDocs, // Import getDocs for querying registrations
+    writeBatch, // Import writeBatch for deleting registrations
+    QueryConstraint
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { TrainingProgram } from '@/types';
@@ -33,13 +35,15 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
         setIsLoading(true);
         setError(null);
 
-        // Base query ordered by creation date descending
-        let q = query(collection(db, PROGRAMS_COLLECTION), orderBy('createdAt', 'desc'));
+        const queryConstraints: QueryConstraint[] = [orderBy('createdAt', 'desc')];
 
         // Apply filter if kvkId is provided (for KVK view)
         if (kvkId) {
-            q = query(q, where('kvkId', '==', kvkId));
+            queryConstraints.push(where('kvkId', '==', kvkId));
         }
+
+         const q = query(collection(db, PROGRAMS_COLLECTION), ...queryConstraints);
+
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const fetchedPrograms: TrainingProgram[] = [];
@@ -47,7 +51,7 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
                 const data = doc.data();
                 const createdAtMillis = data.createdAt instanceof Timestamp
                     ? data.createdAt.toMillis()
-                    : Date.now();
+                    : typeof data.createdAt === 'number' ? data.createdAt : Date.now(); // Fallback if already number
                 const dateMillis = data.date instanceof Timestamp
                     ? data.date.toMillis()
                     : typeof data.date === 'number' ? data.date : Date.now(); // Handle number type
@@ -66,8 +70,6 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
                     kvkId: data.kvkId,
                 });
             });
-            // Optionally filter out past programs for Farmer view here if needed
-            // const currentPrograms = kvkId ? fetchedPrograms : fetchedPrograms.filter(p => p.date >= Date.now());
              setPrograms(fetchedPrograms);
             setIsLoading(false);
         }, (err) => {
@@ -83,7 +85,7 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
     // Function to add a new program
     const addProgram = useCallback(async (programData: Omit<TrainingProgram, 'id' | 'createdAt'>): Promise<string> => {
         if (!programData.kvkId) throw new Error('KVK ID is required.');
-        setIsLoading(true); // Consider local loading state in component instead
+        // Consider local loading state in component instead of global setIsLoading(true);
         try {
             const docRef = await addDoc(collection(db, PROGRAMS_COLLECTION), {
                 ...programData,
@@ -92,16 +94,14 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
             return docRef.id;
         } catch (err: any) {
             console.error("Failed to add training program:", err);
-            setError(err instanceof Error ? err : new Error('Failed to add program'));
+            // setError(err instanceof Error ? err : new Error('Failed to add program')); // Let component handle errors
             throw err;
-        } finally {
-            setIsLoading(false);
-        }
+        } // finally { setIsLoading(false); }
     }, []);
 
     // Function to update an existing program
     const updateProgram = useCallback(async (id: string, updates: Partial<Omit<TrainingProgram, 'id' | 'createdAt' | 'kvkId'>>): Promise<void> => {
-        setIsLoading(true);
+        // Consider local loading state in component
         try {
             const docRef = doc(db, PROGRAMS_COLLECTION, id);
             await updateDoc(docRef, {
@@ -110,11 +110,9 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
             });
         } catch (err: any) {
             console.error("Failed to update training program:", err);
-            setError(err instanceof Error ? err : new Error('Failed to update program'));
+           // setError(err instanceof Error ? err : new Error('Failed to update program')); // Let component handle errors
             throw err;
-        } finally {
-            setIsLoading(false);
-        }
+        } // finally { setIsLoading(false); }
     }, []);
 
      // Function to delete a program and its registrations
@@ -124,7 +122,7 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
             // 1. Delete associated registrations first
             const regQuery = query(collection(db, REGISTRATIONS_COLLECTION), where('programId', '==', id));
             const regSnapshot = await getDocs(regQuery);
-            const batch = db.batch(); // Use Firestore batch for atomic delete
+            const batch = writeBatch(db); // Use Firestore batch for atomic delete
              regSnapshot.forEach(regDoc => {
                  batch.delete(regDoc.ref);
              });
