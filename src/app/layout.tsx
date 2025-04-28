@@ -1,9 +1,11 @@
+// src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/context/AuthContext';
+import Providers from './providers'; // Import the new Providers component
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -25,10 +27,12 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+          <Providers> {/* Wrap with Providers */}
+            <AuthProvider>
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </Providers>
       </body>
     </html>
   );

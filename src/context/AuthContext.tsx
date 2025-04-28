@@ -1,6 +1,7 @@
+// src/context/AuthContext.tsx
 'use client';
 
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import type { UserType } from '@/types';
 
@@ -9,67 +10,54 @@ interface AuthContextType {
   login: (type: UserType) => void;
   logout: () => void;
   isAuthenticated: boolean;
-  isLoading: boolean; // Added loading state
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// In-memory store for user type during session (client-side)
+let sessionUserType: UserType = null;
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
-  const [userType, setUserType] = useState<UserType>(null);
-  const [isLoading, setIsLoading] = useState(true); // Initialize loading as true
+  const [userType, setUserType] = useState<UserType>(sessionUserType);
+  const [isLoading, setIsLoading] = useState(true); // Still useful for initial load/redirect checks
   const router = useRouter();
   const pathname = usePathname();
 
+  const syncState = useCallback((type: UserType) => {
+      sessionUserType = type;
+      setUserType(type);
+  }, []);
+
+  // Effect to handle initial authentication state check and redirection logic
   useEffect(() => {
-    // Check local storage for persisted user type on initial load
-    try {
-      const storedUserType = localStorage.getItem('userType') as UserType;
-      if (storedUserType) {
-        setUserType(storedUserType);
-        // Redirect based on persisted type if not already on the correct path
-        const expectedPathPrefix = storedUserType === 'KVK' ? '/kvk' : '/farmer';
-         if (!pathname.startsWith(expectedPathPrefix) && pathname !== '/login') {
-           router.replace(storedUserType === 'KVK' ? '/kvk/announcements' : '/farmer/dashboard');
-         }
-      } else if (pathname !== '/login') {
-        // If no user type and not on login page, redirect to login
-         router.replace('/login');
+    // Simulate an async check if needed, otherwise just set loading false
+    // In a real app, this might involve checking a token or session
+    const currentUser = sessionUserType; // Use the in-memory value
+
+    if (currentUser) {
+      // User is logged in (in this session)
+      const expectedPathPrefix = currentUser === 'KVK' ? '/kvk' : '/farmer';
+      if (!pathname.startsWith(expectedPathPrefix) && pathname !== '/login') {
+        // Redirect to the correct dashboard if not already there
+        router.replace(currentUser === 'KVK' ? '/kvk/announcements' : '/farmer/dashboard');
       }
-    } catch (error) {
-        console.error("Error accessing localStorage:", error);
-        // Handle potential SecurityError in restricted environments (e.g., private browsing)
-         if (pathname !== '/login') {
-            router.replace('/login');
-         }
-    } finally {
-        setIsLoading(false); // Set loading to false after check
+    } else if (pathname !== '/login') {
+      // No user in session and not on login page, redirect to login
+      router.replace('/login');
     }
+    setIsLoading(false); // Finished checking
   }, [pathname, router]);
 
+  const login = useCallback((type: UserType) => {
+    syncState(type);
+    // Redirect happens in the LoginForm after successful login now
+  }, [syncState]);
 
-  const login = (type: UserType) => {
-    setUserType(type);
-     try {
-        if (type) {
-          localStorage.setItem('userType', type);
-        } else {
-          localStorage.removeItem('userType');
-        }
-     } catch (error) {
-        console.error("Error accessing localStorage:", error);
-     }
-  };
-
-  const logout = () => {
-    setUserType(null);
-    try {
-        localStorage.removeItem('userType');
-        localStorage.removeItem('announcements'); // Clear announcements on logout
-    } catch (error) {
-        console.error("Error accessing localStorage:", error);
-    }
-    router.push('/login');
-  };
+  const logout = useCallback(() => {
+    syncState(null); // Clear session state
+    router.push('/login'); // Redirect to login page
+  }, [router, syncState]);
 
   const isAuthenticated = !!userType;
 

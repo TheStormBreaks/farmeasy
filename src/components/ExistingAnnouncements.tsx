@@ -1,36 +1,65 @@
+// src/components/ExistingAnnouncements.tsx
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { formatDistanceToNow } from 'date-fns';
 import { useAnnouncements } from '@/hooks/useAnnouncements';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { AlertCircle, Loader2, Trash2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Skeleton } from '@/components/ui/skeleton'; // Import Skeleton
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 
 
 export default function ExistingAnnouncements() {
-    // Use the hook directly. It manages loading, error, and data state.
-    const { announcements, isLoading, error, refreshAnnouncements } = useAnnouncements();
+    const { userType } = useAuth(); // Get user type to conditionally show delete button
+    const { announcements, isLoading, error, deleteAnnouncement } = useAnnouncements();
+    const [isDeleting, setIsDeleting] = useState<string | null>(null); // Track which announcement is being deleted
+    const { toast } = useToast();
 
-    // Optional: Refresh announcements when the component mounts,
-    // especially if it might be mounted after an announcement was added
-    // but before the hook's internal listener picked up the change.
-    useEffect(() => {
-        refreshAnnouncements();
-    }, [refreshAnnouncements]);
+    const handleDelete = async (id: string) => {
+        setIsDeleting(id);
+        try {
+            await deleteAnnouncement(id);
+            toast({
+                title: 'Success',
+                description: 'Announcement deleted successfully.',
+            });
+        } catch (err) {
+            console.error("Failed to delete announcement:", err);
+            toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Failed to delete announcement. Please try again.',
+            });
+        } finally {
+            setIsDeleting(null); // Reset deleting state regardless of outcome
+        }
+    };
 
-     if (isLoading) {
-        // Display Skeleton loaders while loading
+     if (isLoading && announcements.length === 0) { // Show skeleton only on initial load
         return (
              <Card className="shadow-md">
                 <CardHeader>
                     <Skeleton className="h-6 w-3/4" />
                     <Skeleton className="h-4 w-1/2" />
                  </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 pt-4">
                     <Skeleton className="h-16 w-full" />
                     <Separator />
                     <Skeleton className="h-16 w-full" />
@@ -47,13 +76,13 @@ export default function ExistingAnnouncements() {
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
-                    Failed to load announcements: {error.message}. Please try refreshing.
+                    Failed to load announcements: {error.message}. Please try refreshing the page.
                 </AlertDescription>
             </Alert>
        );
     }
 
-    if (!announcements || announcements.length === 0) {
+    if (!isLoading && announcements.length === 0) {
         return (
             <Card className="shadow-md">
                 <CardHeader>
@@ -61,15 +90,19 @@ export default function ExistingAnnouncements() {
                     <CardDescription>There are currently no announcements posted.</CardDescription>
                 </CardHeader>
                  <CardContent>
-                    <p className="text-sm text-muted-foreground">KVK can post new announcements using the form.</p>
+                    {userType === 'KVK' && (
+                         <p className="text-sm text-muted-foreground">Use the form to post a new announcement.</p>
+                    )}
+                     {userType === 'FARMER' && (
+                         <p className="text-sm text-muted-foreground">Check back later for updates from KVK.</p>
+                    )}
                  </CardContent>
             </Card>
         );
     }
 
-    // The hook now provides announcements already sorted implicitly by addition order (newest first)
-    // If explicit sorting is needed, ensure the hook does it or sort here:
-    const sortedAnnouncements = [...announcements].sort((a, b) => b.timestamp - a.timestamp);
+    // Announcements are already sorted by Firestore query (desc)
+    // const sortedAnnouncements = [...announcements].sort((a, b) => b.timestamp - a.timestamp);
 
 
     return (
@@ -81,16 +114,61 @@ export default function ExistingAnnouncements() {
             </CardHeader> */}
             <CardContent className="p-0"> {/* Remove default padding if ScrollArea has its own */}
                  <ScrollArea className="h-[400px] rounded-md border p-4 bg-card shadow-inner">
+                     {isLoading && announcements.length > 0 && ( // Show subtle loading indicator when refreshing
+                        <div className="flex justify-center items-center p-4">
+                            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                            <span className="ml-2 text-muted-foreground text-sm">Loading updates...</span>
+                        </div>
+                     )}
                      <div className="space-y-4">
-                        {sortedAnnouncements.map((announcement, index) => (
+                        {announcements.map((announcement, index) => (
                             <React.Fragment key={announcement.id}>
-                                <div className="bg-background/50 border-l-4 border-primary p-4 rounded">
-                                    <p className="text-sm text-foreground break-words">{announcement.text}</p>
-                                    <p className="text-xs text-muted-foreground mt-2">
-                                         Posted {formatDistanceToNow(new Date(announcement.timestamp), { addSuffix: true })}
-                                    </p>
+                                <div className="bg-background/50 border-l-4 border-primary p-4 rounded flex justify-between items-start group">
+                                    <div>
+                                        <p className="text-sm text-foreground break-words">{announcement.text}</p>
+                                        <p className="text-xs text-muted-foreground mt-2">
+                                             Posted {formatDistanceToNow(new Date(announcement.timestamp), { addSuffix: true })}
+                                        </p>
+                                    </div>
+                                     {userType === 'KVK' && (
+                                         <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                 <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className={`ml-2 h-8 w-8 text-muted-foreground hover:text-destructive transition-opacity opacity-0 group-hover:opacity-100 focus:opacity-100 ${isDeleting === announcement.id ? 'cursor-not-allowed' : ''}`}
+                                                    disabled={isDeleting === announcement.id}
+                                                    aria-label="Delete announcement"
+                                                >
+                                                    {isDeleting === announcement.id ? (
+                                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                                    ) : (
+                                                        <Trash2 className="h-4 w-4" />
+                                                    )}
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently delete the announcement.
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel disabled={!!isDeleting}>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={() => handleDelete(announcement.id)}
+                                                    disabled={!!isDeleting}
+                                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                >
+                                                     {isDeleting === announcement.id ? 'Deleting...' : 'Delete'}
+                                                </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                     )}
                                 </div>
-                                {index < sortedAnnouncements.length - 1 && <Separator />}
+                                {index < announcements.length - 1 && <Separator />}
                             </React.Fragment>
                         ))}
                     </div>
