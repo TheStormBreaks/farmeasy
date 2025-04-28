@@ -1,3 +1,4 @@
+// src/components/LoginForm.tsx
 'use client';
 
 import * as React from 'react';
@@ -54,7 +55,10 @@ export default function LoginForm() {
       redirectPath = '/kvk/announcements';
     } else if (userId === 'FARMER' && password === 'FARMER') {
       userType = 'FARMER';
-      redirectPath = '/farmer/dashboard';
+      redirectPath = '/farmer/dashboard'; // Keep default dashboard for now
+    } else if (userId === 'SUPPLY' && password === 'SUPPLY') {
+        userType = 'SUPPLY';
+        redirectPath = '/supply/products';
     }
 
     if (userType) {
@@ -63,15 +67,17 @@ export default function LoginForm() {
         title: 'Login Successful',
         description: `Welcome, ${userType}!`,
       });
-      router.push(redirectPath);
+      // Use router.replace for better history management after login
+      router.replace(redirectPath);
     } else {
       toast({
         variant: 'destructive',
         title: 'Login Failed',
         description: 'Invalid User ID or Password.',
       });
-      setIsLoading(false);
+      setIsLoading(false); // Only set loading false on failure
     }
+    // Don't set isLoading to false on success immediately, let the navigation happen
   };
 
   return (

@@ -1,3 +1,4 @@
+// src/app/farmer/layout.tsx
 import type { ReactNode } from 'react';
 import AuthGuard from '@/components/AuthGuard';
 import AppHeader from '@/components/AppHeader';

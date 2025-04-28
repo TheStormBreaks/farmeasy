@@ -11,22 +11,27 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  userId: string | null; // Simple user ID, could be 'KVK', 'FARMER', 'SUPPLY'
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // In-memory store for user type during session (client-side)
 let sessionUserType: UserType = null;
+let sessionUserId: string | null = null; // Store simple ID
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [userType, setUserType] = useState<UserType>(sessionUserType);
+  const [userId, setUserId] = useState<string | null>(sessionUserId);
   const [isLoading, setIsLoading] = useState(true); // Still useful for initial load/redirect checks
   const router = useRouter();
   const pathname = usePathname();
 
-  const syncState = useCallback((type: UserType) => {
+  const syncState = useCallback((type: UserType, id: string | null) => {
       sessionUserType = type;
+      sessionUserId = id;
       setUserType(type);
+      setUserId(id);
   }, []);
 
   // Effect to handle initial authentication state check and redirection logic
@@ -37,10 +42,20 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     if (currentUser) {
       // User is logged in (in this session)
-      const expectedPathPrefix = currentUser === 'KVK' ? '/kvk' : '/farmer';
+      let expectedPathPrefix = '';
+      if (currentUser === 'KVK') expectedPathPrefix = '/kvk';
+      else if (currentUser === 'FARMER') expectedPathPrefix = '/farmer';
+      else if (currentUser === 'SUPPLY') expectedPathPrefix = '/supply';
+
+      let defaultPath = '/login';
+      if (currentUser === 'KVK') defaultPath = '/kvk/announcements';
+      else if (currentUser === 'FARMER') defaultPath = '/farmer/dashboard';
+      else if (currentUser === 'SUPPLY') defaultPath = '/supply/products';
+
+
       if (!pathname.startsWith(expectedPathPrefix) && pathname !== '/login') {
         // Redirect to the correct dashboard if not already there
-        router.replace(currentUser === 'KVK' ? '/kvk/announcements' : '/farmer/dashboard');
+        router.replace(defaultPath);
       }
     } else if (pathname !== '/login') {
       // No user in session and not on login page, redirect to login
@@ -50,19 +65,24 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   }, [pathname, router]);
 
   const login = useCallback((type: UserType) => {
-    syncState(type);
+    if (type) {
+      syncState(type, type); // Use the type itself as a simple ID
+    } else {
+        syncState(null, null);
+    }
     // Redirect happens in the LoginForm after successful login now
   }, [syncState]);
 
   const logout = useCallback(() => {
-    syncState(null); // Clear session state
+    syncState(null, null); // Clear session state
+    // Also clear any cart context if implemented separately
     router.push('/login'); // Redirect to login page
   }, [router, syncState]);
 
   const isAuthenticated = !!userType;
 
   return (
-    <AuthContext.Provider value={{ userType, login, logout, isAuthenticated, isLoading }}>
+    <AuthContext.Provider value={{ userType, userId, login, logout, isAuthenticated, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
