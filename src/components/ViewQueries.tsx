@@ -3,21 +3,21 @@
 
 import React, { useState } from 'react';
 import { useQueries } from '@/hooks/useQueries';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext'; // Although KVK ID isn't strictly needed for fetching all, it confirms role
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Loader2, Send, MessageSquare, CheckCircle2, Clock } from 'lucide-react';
+import { AlertCircle, Loader2, Send, MessageSquare, CheckCircle2, Clock, User } from 'lucide-react'; // Added User icon
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { formatDistanceToNow } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ViewQueries() {
-    const { userId } = useAuth(); // KVK User ID (for potential future use, though not strictly needed for viewing all queries)
-    const { queries, isLoading, error, answerQuery } = useQueries(); // Get queries and answer function
+    const { userId } = useAuth(); // Confirm KVK user is logged in
+    const { queries, isLoading, error, answerQuery } = useQueries(); // Fetch all queries for KVK
     const { toast } = useToast();
     const [answeringQueryId, setAnsweringQueryId] = useState<string | null>(null);
     const [answerText, setAnswerText] = useState('');
@@ -93,7 +93,7 @@ export default function ViewQueries() {
         );
     }
 
-    // Separate new and answered queries
+    // Separate new and answered queries based on fetched data (already sorted)
     const newQueries = queries.filter(q => q.status === 'new');
     const answeredQueries = queries.filter(q => q.status === 'answered');
 
@@ -111,16 +111,18 @@ export default function ViewQueries() {
                         {newQueries.map((query) => (
                             <AccordionItem value={query.id} key={query.id} className="border bg-card rounded-lg shadow-sm">
                                 <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                                    <div className="flex-1 text-left">
+                                    <div className="flex-1 text-left space-y-1">
                                         <p className="font-medium text-foreground truncate max-w-md lg:max-w-xl">{query.questionText}</p>
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                            Asked by Farmer ID: {query.farmerId} • {formatDistanceToNow(new Date(query.timestamp), { addSuffix: true })}
+                                        <p className="text-xs text-muted-foreground flex items-center">
+                                            <User className="h-3 w-3 mr-1.5" /> Farmer: {query.farmerId}
+                                            <span className='mx-1.5'>•</span>
+                                            <Clock className="h-3 w-3 mr-1" /> {formatDistanceToNow(new Date(query.timestamp), { addSuffix: true })}
                                         </p>
                                     </div>
                                      <Badge variant="secondary" className="ml-4">New</Badge>
                                 </AccordionTrigger>
                                 <AccordionContent className="px-6 pb-6 pt-0">
-                                     <p className="text-foreground mb-4 whitespace-pre-wrap">{query.questionText}</p>
+                                     <p className="text-foreground mb-4 whitespace-pre-wrap pt-2 border-t">{query.questionText}</p>
                                     <div className="space-y-2">
                                         <Textarea
                                             placeholder="Type your answer here..."
@@ -165,20 +167,22 @@ export default function ViewQueries() {
                         {answeredQueries.map((query) => (
                              <AccordionItem value={query.id} key={query.id} className="border bg-card rounded-lg shadow-sm opacity-80">
                                 <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                                    <div className="flex-1 text-left">
-                                         <p className="font-medium text-foreground truncate max-w-md lg:max-w-xl">{query.questionText}</p>
-                                         <p className="text-xs text-muted-foreground mt-1">
-                                             Asked by Farmer ID: {query.farmerId} • {formatDistanceToNow(new Date(query.timestamp), { addSuffix: true })}
-                                         </p>
+                                     <div className="flex-1 text-left space-y-1">
+                                        <p className="font-medium text-foreground truncate max-w-md lg:max-w-xl">{query.questionText}</p>
+                                        <p className="text-xs text-muted-foreground flex items-center">
+                                             <User className="h-3 w-3 mr-1.5" /> Farmer: {query.farmerId}
+                                             <span className='mx-1.5'>•</span>
+                                             <Clock className="h-3 w-3 mr-1" /> Asked {formatDistanceToNow(new Date(query.timestamp), { addSuffix: true })}
+                                        </p>
                                     </div>
                                      <Badge variant="default" className="ml-4 bg-green-600 hover:bg-green-700">Answered</Badge>
                                 </AccordionTrigger>
                                 <AccordionContent className="px-6 pb-6 pt-0 space-y-3">
-                                     <div className="bg-background p-4 border rounded-md">
+                                     <div className="bg-background p-3 border rounded-md">
                                          <p className="text-sm font-semibold text-primary mb-1">Question:</p>
                                          <p className="text-sm text-foreground whitespace-pre-wrap">{query.questionText}</p>
                                      </div>
-                                     <div className="bg-secondary p-4 border border-primary/50 rounded-md">
+                                     <div className="bg-secondary p-3 border border-primary/50 rounded-md">
                                          <p className="text-sm font-semibold text-primary mb-1">Answer:</p>
                                          <p className="text-sm text-secondary-foreground whitespace-pre-wrap">{query.answerText}</p>
                                          {query.answeredAt && (

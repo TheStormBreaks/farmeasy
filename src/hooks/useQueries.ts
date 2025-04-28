@@ -13,6 +13,7 @@ import {
     doc,
     where,
     serverTimestamp,
+    QueryConstraint // Import QueryConstraint type
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Query } from '@/types';
@@ -29,22 +30,20 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
         setIsLoading(true);
         setError(null);
 
-        let q;
+        const queryConstraints: QueryConstraint[] = [];
+
         if (farmerId) {
-            // Fetch queries only for a specific farmer
-            q = query(
-                collection(db, QUERIES_COLLECTION),
-                where('farmerId', '==', farmerId),
-                orderBy('timestamp', 'desc') // Show newest first
-            );
+            // Constraints for Farmer view: Filter by farmerId, sort by timestamp descending
+            queryConstraints.push(where('farmerId', '==', farmerId));
+            queryConstraints.push(orderBy('timestamp', 'desc')); // Show newest asked first
         } else {
-            // Fetch all queries (for KVK view)
-            q = query(
-                collection(db, QUERIES_COLLECTION),
-                orderBy('status', 'asc'), // Show 'new' queries first
-                orderBy('timestamp', 'desc') // Then sort by time within status
-            );
+            // Constraints for KVK view: Sort by status ('new' first), then by timestamp descending
+            queryConstraints.push(orderBy('status', 'asc')); // 'answered' after 'new'
+            queryConstraints.push(orderBy('timestamp', 'desc')); // Show newest within status groups first
         }
+
+        const q = query(collection(db, QUERIES_COLLECTION), ...queryConstraints);
+
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const fetchedQueries: Query[] = [];
@@ -52,9 +51,13 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
                 const data = doc.data();
                 const timestampMillis = data.timestamp instanceof Timestamp
                     ? data.timestamp.toMillis()
-                    : Date.now();
+                    : typeof data.timestamp === 'number' // Handle potential number timestamps
+                    ? data.timestamp
+                    : Date.now(); // Fallback
                  const answeredAtMillis = data.answeredAt instanceof Timestamp
                     ? data.answeredAt.toMillis()
+                    : typeof data.answeredAt === 'number' // Handle potential number timestamps
+                    ? data.answeredAt
                     : undefined;
 
                 fetchedQueries.push({
@@ -62,8 +65,8 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
                     farmerId: data.farmerId,
                     questionText: data.questionText,
                     timestamp: timestampMillis,
-                    status: data.status,
-                    answerText: data.answerText,
+                    status: data.status || 'new', // Default to 'new' if status is missing
+                    answerText: data.answerText || undefined, // Ensure it's string or undefined
                     answeredAt: answeredAtMillis,
                 });
             });
@@ -82,7 +85,7 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
     // Function for Farmer to add a new query
     const addQuery = useCallback(async (fId: string, questionText: string): Promise<void> => {
         if (!fId) throw new Error('Farmer ID is required.');
-        setIsLoading(true); // Indicate loading during add
+        // No need to set global loading state here, let form handle its own state
         try {
             await addDoc(collection(db, QUERIES_COLLECTION), {
                 farmerId: fId,
@@ -95,16 +98,14 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
             // onSnapshot handles state update
         } catch (err: any) {
             console.error("Failed to add query:", err);
-            setError(err instanceof Error ? err : new Error('Failed to add query'));
+            // Let the calling component handle the error (e.g., show toast)
             throw err;
-        } finally {
-            setIsLoading(false);
         }
     }, []);
 
     // Function for KVK to answer a query
     const answerQuery = useCallback(async (queryId: string, answerText: string): Promise<void> => {
-        setIsLoading(true); // Indicate loading during update
+        // No need to set global loading state here, let answering component handle state
         try {
             const docRef = doc(db, QUERIES_COLLECTION, queryId);
             await updateDoc(docRef, {
@@ -115,10 +116,8 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
             // onSnapshot handles state update
         } catch (err: any) {
             console.error("Failed to answer query:", err);
-            setError(err instanceof Error ? err : new Error('Failed to answer query'));
+            // Let the calling component handle the error
             throw err;
-        } finally {
-            setIsLoading(false);
         }
     }, []);
 
