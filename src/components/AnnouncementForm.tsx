@@ -18,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Megaphone } from 'lucide-react';
 import type { Announcement } from '@/types';
-import { useAnnouncements } from '@/hooks/useAnnouncements'; // Assuming hook exists
+import { useAnnouncements } from '@/hooks/useAnnouncements';
 
 const formSchema = z.object({
   announcementText: z.string().min(10, { message: 'Announcement must be at least 10 characters long' }).max(500, { message: 'Announcement cannot exceed 500 characters' }),
@@ -28,7 +28,7 @@ type AnnouncementFormValues = z.infer<typeof formSchema>;
 
 export default function AnnouncementForm() {
   const { toast } = useToast();
-  const { addAnnouncement } = useAnnouncements();
+  const { addAnnouncement, refreshAnnouncements } = useAnnouncements(); // Get refreshAnnouncements
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<AnnouncementFormValues>({
@@ -47,6 +47,7 @@ export default function AnnouncementForm() {
                 description: 'Announcement posted successfully.',
             });
             form.reset(); // Clear the form
+            refreshAnnouncements(); // Explicitly refresh the announcements list
         } catch (error) {
             console.error("Failed to post announcement:", error);
             toast({

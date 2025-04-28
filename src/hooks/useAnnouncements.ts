@@ -19,7 +19,7 @@ export function useAnnouncements() {
             if (storedAnnouncements) {
                 const parsedAnnouncements: Announcement[] = JSON.parse(storedAnnouncements);
                 // Basic validation
-                if (Array.isArray(parsedAnnouncements) && parsedAnnouncements.every(a => a.id && a.text && a.timestamp)) {
+                if (Array.isArray(parsedAnnouncements) && parsedAnnouncements.every(a => a.id && a.text && typeof a.timestamp === 'number')) {
                    setAnnouncements(parsedAnnouncements);
                 } else {
                     console.warn("Invalid announcement data found in localStorage. Resetting.");
@@ -45,6 +45,7 @@ export function useAnnouncements() {
          // Optional: Add listener for storage events from other tabs/windows
          const handleStorageChange = (event: StorageEvent) => {
             if (event.key === ANNOUNCEMENTS_STORAGE_KEY) {
+                 // console.log("Storage event detected for announcements, reloading...");
                 loadAnnouncements(); // Reload if announcements change elsewhere
             }
         };
@@ -64,13 +65,17 @@ export function useAnnouncements() {
                     timestamp: Date.now(),
                 };
 
+                let updatedAnnouncementsList: Announcement[] = [];
                 // Use functional update to avoid race conditions
                 setAnnouncements(prevAnnouncements => {
-                    const updatedAnnouncements = [newAnnouncement, ...prevAnnouncements];
-                     // Persist to localStorage
-                    localStorage.setItem(ANNOUNCEMENTS_STORAGE_KEY, JSON.stringify(updatedAnnouncements));
-                    return updatedAnnouncements;
+                    updatedAnnouncementsList = [newAnnouncement, ...prevAnnouncements];
+                    // Return the new state array to update the state
+                    return updatedAnnouncementsList;
                 });
+
+                // Persist to localStorage *after* queuing the state update
+                localStorage.setItem(ANNOUNCEMENTS_STORAGE_KEY, JSON.stringify(updatedAnnouncementsList));
+
                  setIsLoading(false);
                  resolve();
              } catch (err: any) {
