@@ -5,12 +5,12 @@ import { useState, useEffect, useCallback } from 'react';
 import {
     collection,
     addDoc,
-    deleteDoc,
+    deleteDoc, // Import deleteDoc
     query,
     orderBy,
     onSnapshot,
     Timestamp,
-    doc,
+    doc, // Import doc
     serverTimestamp
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase'; // Import the initialized Firestore instance
@@ -35,14 +35,19 @@ export function useAnnouncements() {
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 // Ensure timestamp is correctly handled (Firebase returns Timestamp objects)
-                const timestamp = data.timestamp instanceof Timestamp
-                    ? data.timestamp.toMillis()
-                    : data.timestamp; // Fallback if already number
+                 // Check if timestamp exists and is a Timestamp object
+                 const timestampMillis = data.timestamp instanceof Timestamp
+                 ? data.timestamp.toMillis()
+                 : // If it's already a number (e.g., from older data or manual input), use it
+                 typeof data.timestamp === 'number'
+                 ? data.timestamp
+                 : // Otherwise, provide a default or handle appropriately
+                   Date.now(); // Use current time as a fallback
 
                 fetchedAnnouncements.push({
                     id: doc.id,
                     text: data.text,
-                    timestamp: timestamp,
+                    timestamp: timestampMillis,
                 });
             });
             setAnnouncements(fetchedAnnouncements);
@@ -77,17 +82,15 @@ export function useAnnouncements() {
 
     // Function to delete an announcement from Firestore
     const deleteAnnouncement = useCallback(async (id: string): Promise<void> => {
-       setIsLoading(true); // Optional: show loading during delete
+       // Don't set global isLoading for delete, manage locally in component
         try {
             const docRef = doc(db, ANNOUNCEMENTS_COLLECTION, id);
             await deleteDoc(docRef);
             // No need to manually update state, onSnapshot will handle it
         } catch (err: any) {
             console.error("Failed to delete announcement:", err);
-            setError(err instanceof Error ? err : new Error('Failed to delete announcement'));
+            // Don't set global error, let component handle it
              throw err; // Re-throw error to be caught by the caller if needed
-        } finally {
-            setIsLoading(false); // Set loading false after operation
         }
     }, []);
 
@@ -106,7 +109,7 @@ export function useAnnouncements() {
         isLoading,
         error,
         addAnnouncement,
-        deleteAnnouncement,
+        deleteAnnouncement, // Expose delete function
         refreshAnnouncements
     };
 }
