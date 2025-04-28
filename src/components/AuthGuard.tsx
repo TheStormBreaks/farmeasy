@@ -38,8 +38,8 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children, requiredUserType }) => 
     if (!isAuthorized) {
         // If authenticated but wrong user type, redirect based on actual type
         let redirectPath = '/login'; // Default fallback
-        if (userType === 'KVK') redirectPath = '/kvk/announcements';
-        else if (userType === 'FARMER') redirectPath = '/farmer/dashboard';
+        if (userType === 'KVK') redirectPath = '/kvk/announcements'; // KVK default remains announcements
+        else if (userType === 'FARMER') redirectPath = '/farmer/dashboard'; // Farmer default remains dashboard
         else if (userType === 'SUPPLY') redirectPath = '/supply/products';
 
          // Prevent infinite redirect loop if already on the correct page or login

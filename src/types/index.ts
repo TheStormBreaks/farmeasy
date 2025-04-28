@@ -1,5 +1,6 @@
 
 
+
 export type UserType = 'KVK' | 'FARMER' | 'SUPPLY' | null;
 
 export interface Announcement {
@@ -29,4 +30,14 @@ export interface Cart {
     userId: string; // FARMER's user ID
     items: CartItem[];
     lastUpdated: number;
+}
+
+export interface Query {
+  id: string;
+  farmerId: string; // ID of the farmer who asked
+  questionText: string;
+  timestamp: number; // When the question was asked
+  status: 'new' | 'answered'; // Status of the query
+  answerText?: string; // Optional answer from KVK
+  answeredAt?: number; // Optional timestamp for answer
 }

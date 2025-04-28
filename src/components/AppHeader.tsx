@@ -5,7 +5,7 @@ import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus } from 'lucide-react'; // Added icons
+import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus, HelpCircle, MessageSquareWarning, ClipboardList } from 'lucide-react'; // Added icons
 import { useAuth } from '@/context/AuthContext';
 import type { UserType } from '@/types';
 import { cn } from '@/lib/utils';
@@ -71,6 +71,15 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
                         >
                         Announcements
                     </Link>
+                     <Link
+                        href="/farmer/ask-query"
+                        className={cn(
+                            "text-sm font-medium transition-colors hover:text-primary",
+                            pathname === "/farmer/ask-query" ? "text-primary" : "text-muted-foreground"
+                        )}
+                        >
+                        <HelpCircle className="inline-block h-4 w-4 mr-1" /> Ask KVK
+                    </Link>
                 </>
             )}
              {userRole === 'KVK' && (
@@ -82,7 +91,16 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
                             pathname === "/kvk/announcements" ? "text-primary" : "text-muted-foreground"
                         )}
                         >
-                        Announcements
+                         <MessageSquareWarning className="inline-block h-4 w-4 mr-1" /> Manage Announcements
+                    </Link>
+                     <Link
+                        href="/kvk/queries"
+                        className={cn(
+                            "text-sm font-medium transition-colors hover:text-primary",
+                            pathname === "/kvk/queries" ? "text-primary" : "text-muted-foreground"
+                        )}
+                        >
+                         <ClipboardList className="inline-block h-4 w-4 mr-1" /> View Farmer Queries
                     </Link>
                 </>
              )}

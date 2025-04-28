@@ -55,10 +55,7 @@ export default function ExistingAnnouncements() {
      if (isLoading && announcements.length === 0) { // Show skeleton only on initial load
         return (
              <Card className="shadow-md">
-                <CardHeader>
-                    <Skeleton className="h-6 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                 </CardHeader>
+                 {/* Removed Header */}
                 <CardContent className="space-y-4 pt-4">
                     <Skeleton className="h-16 w-full" />
                     <Separator />
@@ -85,13 +82,13 @@ export default function ExistingAnnouncements() {
     if (!isLoading && announcements.length === 0) {
         return (
             <Card className="shadow-md">
-                <CardHeader>
+                 <CardHeader>
                     <CardTitle>No Announcements</CardTitle>
-                    <CardDescription>There are currently no announcements posted.</CardDescription>
-                </CardHeader>
+                    <CardDescription>There are currently no general announcements posted.</CardDescription>
+                 </CardHeader>
                  <CardContent>
                     {userType === 'KVK' && (
-                         <p className="text-sm text-muted-foreground">Use the form to post a new announcement.</p>
+                         <p className="text-sm text-muted-foreground">Use the form above to post a new announcement.</p>
                     )}
                      {userType === 'FARMER' && (
                          <p className="text-sm text-muted-foreground">Check back later for updates from KVK.</p>
@@ -107,13 +104,9 @@ export default function ExistingAnnouncements() {
 
     return (
         <Card className="shadow-md">
-            {/* Optional Header */}
-            {/* <CardHeader>
-                 <CardTitle>Posted Announcements</CardTitle>
-                 <CardDescription>Latest updates</CardDescription>
-            </CardHeader> */}
+            {/* Removed Header */}
             <CardContent className="p-0"> {/* Remove default padding if ScrollArea has its own */}
-                 <ScrollArea className="h-[400px] rounded-md border p-4 bg-card shadow-inner">
+                 <ScrollArea className="h-[300px] rounded-md border p-4 bg-card shadow-inner">
                      {isLoading && announcements.length > 0 && ( // Show subtle loading indicator when refreshing
                         <div className="flex justify-center items-center p-4">
                             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
