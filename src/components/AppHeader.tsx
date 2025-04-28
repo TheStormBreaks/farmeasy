@@ -1,3 +1,4 @@
+
 // src/components/AppHeader.tsx
 'use client';
 
@@ -5,7 +6,7 @@ import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus, HelpCircle, MessageSquareWarning, ClipboardList } from 'lucide-react'; // Added icons
+import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus, HelpCircle, MessageSquareWarning, ClipboardList, GraduationCap } from 'lucide-react'; // Added GraduationCap icon
 import { useAuth } from '@/context/AuthContext';
 import type { UserType } from '@/types';
 import { cn } from '@/lib/utils';
@@ -45,6 +46,24 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
             {userRole === 'FARMER' && (
                 <>
                     <Link
+                        href="/farmer/dashboard"
+                        className={cn(
+                            "text-sm font-medium transition-colors hover:text-primary",
+                            pathname === "/farmer/dashboard" ? "text-primary" : "text-muted-foreground"
+                        )}
+                        >
+                        Announcements
+                    </Link>
+                     <Link
+                        href="/farmer/training"
+                        className={cn(
+                            "text-sm font-medium transition-colors hover:text-primary",
+                            pathname === "/farmer/training" ? "text-primary" : "text-muted-foreground"
+                        )}
+                        >
+                         <GraduationCap className="inline-block h-4 w-4 mr-1" /> Training
+                    </Link>
+                    <Link
                         href="/farmer/shop"
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
@@ -61,15 +80,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
                         )}
                         >
                          <ShoppingCart className="inline-block h-4 w-4 mr-1" /> Cart
-                    </Link>
-                     <Link
-                        href="/farmer/dashboard"
-                        className={cn(
-                            "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/farmer/dashboard" ? "text-primary" : "text-muted-foreground"
-                        )}
-                        >
-                        Announcements
                     </Link>
                      <Link
                         href="/farmer/ask-query"
@@ -91,7 +101,16 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
                             pathname === "/kvk/announcements" ? "text-primary" : "text-muted-foreground"
                         )}
                         >
-                         <MessageSquareWarning className="inline-block h-4 w-4 mr-1" /> Manage Announcements
+                         <MessageSquareWarning className="inline-block h-4 w-4 mr-1" /> Announcements
+                    </Link>
+                     <Link
+                        href="/kvk/training"
+                        className={cn(
+                            "text-sm font-medium transition-colors hover:text-primary",
+                            pathname === "/kvk/training" ? "text-primary" : "text-muted-foreground"
+                        )}
+                        >
+                         <GraduationCap className="inline-block h-4 w-4 mr-1" /> Training Programs
                     </Link>
                      <Link
                         href="/kvk/queries"
@@ -100,7 +119,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
                             pathname === "/kvk/queries" ? "text-primary" : "text-muted-foreground"
                         )}
                         >
-                         <ClipboardList className="inline-block h-4 w-4 mr-1" /> View Farmer Queries
+                         <ClipboardList className="inline-block h-4 w-4 mr-1" /> Farmer Queries
                     </Link>
                 </>
              )}
@@ -131,3 +150,4 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
 };
 
 export default AppHeader;
+

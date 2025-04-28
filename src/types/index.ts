@@ -1,6 +1,7 @@
 
 
 
+
 export type UserType = 'KVK' | 'FARMER' | 'SUPPLY' | null;
 
 export interface Announcement {
@@ -40,4 +41,26 @@ export interface Query {
   status: 'new' | 'answered'; // Status of the query
   answerText?: string; // Optional answer from KVK
   answeredAt?: number; // Optional timestamp for answer
+}
+
+
+// New Types for Training Programs and Registrations
+export interface TrainingProgram {
+    id: string;
+    title: string;
+    description: string;
+    date: number; // Timestamp for the training date
+    location: string;
+    registrationDeadline?: number; // Optional timestamp for deadline
+    createdAt: number; // Timestamp when created
+    kvkId: string; // ID of the KVK center posting it (assuming KVK is the user ID)
+}
+
+export interface Registration {
+    id: string;
+    programId: string; // ID of the TrainingProgram
+    farmerId: string; // ID of the Farmer registering
+    farmerName: string;
+    mobileNumber: string;
+    registrationTimestamp: number; // When the farmer registered
 }
