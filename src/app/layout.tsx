@@ -5,7 +5,8 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/context/AuthContext';
-import Providers from './providers'; // Import the new Providers component
+import Providers from './providers'; // Import the QueryClientProvider component
+import { ThemeProvider } from '@/components/ThemeProvider'; // Import ThemeProvider
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -27,12 +28,19 @@ export default function RootLayout({
           inter.variable
         )}
       >
-          <Providers> {/* Wrap with Providers */}
+        <ThemeProvider // Wrap with ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers> {/* Wrap with QueryClientProvider */}
             <AuthProvider>
               {children}
               <Toaster />
             </AuthProvider>
           </Providers>
+         </ThemeProvider>
       </body>
     </html>
   );

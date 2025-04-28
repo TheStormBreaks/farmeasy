@@ -6,10 +6,11 @@ import React from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus, HelpCircle, MessageSquareWarning, ClipboardList, GraduationCap } from 'lucide-react'; // Added GraduationCap icon
+import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus, HelpCircle, MessageSquareWarning, ClipboardList, GraduationCap, Moon, Sun } from 'lucide-react'; // Added Moon, Sun
 import { useAuth } from '@/context/AuthContext';
 import type { UserType } from '@/types';
 import { cn } from '@/lib/utils';
+import { useTheme } from "next-themes"; // Import useTheme
 
 interface AppHeaderProps {
     userRole: UserType;
@@ -19,6 +20,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
   const { logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const { theme, setTheme } = useTheme(); // Get theme state and setter
 
   const handleLogout = () => {
     logout();
@@ -32,6 +34,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
         default: return 'FarmEasy Connect';
     }
   }
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -139,6 +146,12 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
         </nav>
 
         <div className="flex items-center justify-end space-x-2">
+           {/* Dark Mode Toggle Button */}
+          <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+             <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+             <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </Button>
+
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout
