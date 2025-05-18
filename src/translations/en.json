@@ -84,5 +84,29 @@
     "metadata_title": "Manage Training Programs | KVK Portal",
     "page_title": "Training Program Management",
     "page_description": "Create new training sessions, update existing ones, and view farmer registrations."
+  },
+  "AnnouncementForm": {
+    "announcementDetailsLabel": "Announcement Details",
+    "placeholderText": "Enter the announcement details here...",
+    "postButtonLoading": "Posting...",
+    "postButton": "Post Announcement",
+    "successTitle": "Success",
+    "successDescription": "Announcement posted successfully.",
+    "errorTitle": "Error",
+    "errorDescription": "Failed to post announcement. Please try again."
+  },
+  "CropWeatherAdvisoryForm": {
+    "updateAdvisoryTitle": "Update Advisory",
+    "advisoryDescription": "Post important warnings or advice regarding current crop conditions and weather forecasts. This will be prominently displayed to farmers.",
+    "advisoryDetailsLabel": "Advisory Details",
+    "placeholderText": "Enter the crop and weather advisory details here...",
+    "updateButtonLoading": "Updating...",
+    "updateButton": "Update Advisory",
+    "saveIconLabel": "Save",
+    "successTitle": "Success",
+    "successDescription": "Crop & Weather Advisory updated successfully.",
+    "errorTitle": "Error",
+    "errorDescriptionGeneral": "Failed to update advisory. Please try again.",
+    "errorDescriptionLoad": "Could not load current advisory."
   }
 }

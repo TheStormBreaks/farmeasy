@@ -84,5 +84,29 @@
     "metadata_title": "प्रशिक्षण कार्यक्रम प्रबंधित करू | केवीके पोर्टल",
     "page_title": "प्रशिक्षण कार्यक्रम प्रबंधन",
     "page_description": "नयाँ प्रशिक्षण सत्र बनाउ, वर्तमानमे अपडेट करू, आ कृषक पंजीकरण देखू।"
+  },
+  "AnnouncementForm": {
+    "announcementDetailsLabel": "घोषणाक विवरण",
+    "placeholderText": "घोषणाक विवरण एतय दर्ज करू...",
+    "postButtonLoading": "पोस्ट भ' रहल अछि...",
+    "postButton": "घोषणा पोस्ट करू",
+    "successTitle": "सफलता",
+    "successDescription": "घोषणा सफलतापूर्वक पोस्ट भेल।",
+    "errorTitle": "त्रुटि",
+    "errorDescription": "घोषणा पोस्ट करबामे विफल। कृपया फेरसँ प्रयास करू।"
+  },
+  "CropWeatherAdvisoryForm": {
+    "updateAdvisoryTitle": "सलाह अपडेट करू",
+    "advisoryDescription": "वर्तमान फसल स्थिति आ मौसमक पूर्वानुमानक संबंधमे महत्वपूर्ण चेतावनी वा सलाह पोस्ट करू। ई कृषकसभकेँ प्रमुखतासँ प्रदर्शित कयल जाएत।",
+    "advisoryDetailsLabel": "सलाहक विवरण",
+    "placeholderText": "फसल आ मौसम सलाहक विवरण एतय दर्ज करू...",
+    "updateButtonLoading": "अपडेट भ' रहल अछि...",
+    "updateButton": "सलाह अपडेट करू",
+    "saveIconLabel": "सहेजू",
+    "successTitle": "सफलता",
+    "successDescription": "फसल आ मौसम सलाहकार सफलतापूर्वक अपडेट भेल।",
+    "errorTitle": "त्रुटि",
+    "errorDescriptionGeneral": "सलाह अपडेट करबामे विफल। कृपया फेरसँ प्रयास करू।",
+    "errorDescriptionLoad": "वर्तमान सलाह लोड नहि भ' सकल।"
   }
 }
