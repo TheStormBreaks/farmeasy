@@ -1,3 +1,4 @@
+
 // src/hooks/useAnnouncements.ts
 'use client';
 
@@ -5,15 +6,15 @@ import { useState, useEffect, useCallback } from 'react';
 import {
     collection,
     addDoc,
-    deleteDoc, // Import deleteDoc
+    deleteDoc,
     query,
     orderBy,
     onSnapshot,
     Timestamp,
-    doc, // Import doc
+    doc,
     serverTimestamp
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase'; // Import the initialized Firestore instance
+import { db } from '@/lib/firebase';
 import type { Announcement } from '@/types';
 
 const ANNOUNCEMENTS_COLLECTION = 'announcements';
@@ -23,7 +24,6 @@ export function useAnnouncements() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
-    // Fetch announcements using onSnapshot for real-time updates
     useEffect(() => {
         setIsLoading(true);
         setError(null);
@@ -34,15 +34,11 @@ export function useAnnouncements() {
             const fetchedAnnouncements: Announcement[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
-                // Ensure timestamp is correctly handled (Firebase returns Timestamp objects)
-                 // Check if timestamp exists and is a Timestamp object
                  const timestampMillis = data.timestamp instanceof Timestamp
                  ? data.timestamp.toMillis()
-                 : // If it's already a number (e.g., from older data or manual input), use it
-                 typeof data.timestamp === 'number'
+                 : typeof data.timestamp === 'number'
                  ? data.timestamp
-                 : // Otherwise, provide a default or handle appropriately
-                   Date.now(); // Use current time as a fallback
+                 : Date.now();
 
                 fetchedAnnouncements.push({
                     id: doc.id,
@@ -58,58 +54,51 @@ export function useAnnouncements() {
             setIsLoading(false);
         });
 
-        // Cleanup listener on unmount
         return () => unsubscribe();
-    }, []); // Empty dependency array ensures this runs once on mount
+    }, []);
 
-    // Function to add a new announcement to Firestore
     const addAnnouncement = useCallback(async (text: string): Promise<void> => {
-        setIsLoading(true); // Optional: show loading during add
+        // Removed setIsLoading(true) and setIsLoading(false) from here.
+        // The component triggering addAnnouncement (e.g., AnnouncementForm)
+        // should manage its own submission loading state.
+        // The onSnapshot listener will handle updating the announcements list.
         try {
             await addDoc(collection(db, ANNOUNCEMENTS_COLLECTION), {
                 text: text,
-                timestamp: serverTimestamp(), // Use server timestamp
+                timestamp: serverTimestamp(),
             });
-            // No need to manually update state, onSnapshot will handle it
         } catch (err: any) {
             console.error("Failed to add announcement:", err);
-            setError(err instanceof Error ? err : new Error('Failed to add announcement'));
-            throw err; // Re-throw error to be caught by the caller if needed
-        } finally {
-             setIsLoading(false); // Set loading false after operation
+            // setError(err instanceof Error ? err : new Error('Failed to add announcement')); // Let component handle specific error display
+            throw err; // Re-throw for the component to catch and potentially show a toast
         }
     }, []);
 
-    // Function to delete an announcement from Firestore
     const deleteAnnouncement = useCallback(async (id: string): Promise<void> => {
-       // Don't set global isLoading for delete, manage locally in component
+        // No global isLoading manipulation for delete.
+        // The component triggering delete (ExistingAnnouncements) manages its own deleting state.
+        // The onSnapshot listener will handle updating the announcements list.
         try {
             const docRef = doc(db, ANNOUNCEMENTS_COLLECTION, id);
             await deleteDoc(docRef);
-            // No need to manually update state, onSnapshot will handle it
         } catch (err: any) {
             console.error("Failed to delete announcement:", err);
-            // Don't set global error, let component handle it
-             throw err; // Re-throw error to be caught by the caller if needed
+             throw err; // Re-throw for the component to catch
         }
     }, []);
 
-
-    // Refresh function (relying on onSnapshot, but can be kept if explicit refresh needed elsewhere)
     const refreshAnnouncements = useCallback(() => {
-        // onSnapshot handles real-time updates, so an explicit refresh
-        // might not be strictly necessary unless triggering a re-fetch for other reasons.
-        // If needed, could potentially re-run the query setup, but usually not required with onSnapshot.
-        console.log("Real-time updates enabled via onSnapshot.");
+        // This function is less critical with onSnapshot, as updates are real-time.
+        // Kept for potential explicit refresh scenarios if ever needed.
+        console.log("Real-time updates for announcements are active via onSnapshot.");
     }, []);
 
-    // Return state and functions
     return {
-        announcements, // Already sorted by timestamp desc by the query
-        isLoading,
+        announcements,
+        isLoading, // Reflects the listener's loading state for the initial fetch.
         error,
         addAnnouncement,
-        deleteAnnouncement, // Expose delete function
+        deleteAnnouncement,
         refreshAnnouncements
     };
 }
