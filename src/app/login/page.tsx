@@ -59,6 +59,7 @@ export default function LoginPage() {
                 <SelectItem value="en">English</SelectItem>
                 <SelectItem value="hi">हिन्दी (Hindi)</SelectItem>
                 <SelectItem value="kn">ಕನ್ನಡ (Kannada)</SelectItem>
+                <SelectItem value="ma">मैथिली (Maithili)</SelectItem>
               </SelectContent>
             </Select>
           </div>

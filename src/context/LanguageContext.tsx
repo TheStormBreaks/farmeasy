@@ -9,6 +9,7 @@ import type { LanguageCode } from '@/types';
 import enTranslations from '@/translations/en.json';
 import hiTranslations from '@/translations/hi.json';
 import knTranslations from '@/translations/kn.json';
+import maTranslations from '@/translations/ma.json'; // Import Maithili translations
 
 type Translations = typeof enTranslations; // Assume all translation files have the same structure
 
@@ -23,6 +24,7 @@ const translationsMap: Record<LanguageCode, Translations> = {
   en: enTranslations,
   hi: hiTranslations,
   kn: knTranslations,
+  ma: maTranslations, // Add Maithili to the map
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);

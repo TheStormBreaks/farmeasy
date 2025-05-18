@@ -1,0 +1,88 @@
+
+{
+  "LoginPage": {
+    "mainTitle": "फार्मइजी कनेक्ट",
+    "subTitle": "अपन खातामे लॉग इन करू",
+    "languageLabel": "भाषा"
+  },
+  "LoginForm": {
+    "title": "लॉग इन करू",
+    "userIdLabel": "उपयोगकर्ता आईडी",
+    "userIdPlaceholder": "अपन उपयोगकर्ता आईडी दर्ज करू",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "अपन पासवर्ड दर्ज करू",
+    "loginButton": "लॉग इन",
+    "loggingInButton": "लॉग इन भ' रहल अछि..."
+  },
+  "AppHeader": {
+    "kvkPortal": "केवीके पोर्टल",
+    "farmerPortal": "कृषक पोर्टल",
+    "supplierPortal": "आपूर्तिकर्ता पोर्टल",
+    "defaultTitle": "फार्मइजी कनेक्ट",
+    "logout": "लॉग आउट",
+    "toggleTheme": "थीम बदलू",
+    "nav": {
+      "farmer_dashboard": "घोषणा",
+      "farmer_training": "प्रशिक्षण",
+      "farmer_shop": "दोकान",
+      "farmer_cart": "कार्ट",
+      "farmer_ask_query": "केवीके सँ पुछू",
+      "kvk_announcements": "घोषणा",
+      "kvk_training": "प्रशिक्षण कार्यक्रम",
+      "kvk_queries": "कृषक प्रश्न",
+      "supply_products": "उत्पाद प्रबंधित करू"
+    }
+  },
+  "FarmerDashboardPage": {
+    "title": "डैशबोर्ड | कृषक पोर्टल",
+    "description": "केवीके सँ घोषणा आ सलाह देखू।",
+    "advisoryTitle": "फसल आ मौसम सलाहकार",
+    "announcementsTitle": "सामान्य घोषणा",
+    "announcementsDescription": "केवीके सँ नवीनतम अपडेट आ जानकारी।"
+  },
+  "KVKAnnouncementsPage": {
+    "metadata_title": "घोषणा आ सलाहकार प्रबंधित करू | केवीके पोर्टल",
+    "page_title": "संचार प्रबंधित करू",
+    "general_announcements_title": "सामान्य घोषणा",
+    "crop_weather_advisory_title": "फसल आ मौसम सलाहकार"
+  },
+  "SupplyProductsPage": {
+    "metadata_title": "उत्पाद प्रबंधित करू | आपूर्तिकर्ता पोर्टल",
+    "page_title": "उत्पाद प्रबंधन",
+    "page_description": "नयाँ उत्पाद जोड़ू वा वर्तमान भंडार प्रबंधित करू।"
+  },
+  "FarmerAskQueryPage": {
+    "metadata_title": "केवीके सँ पुछू आ प्रश्न देखू | कृषक पोर्टल",
+    "ask_kvk_title": "केवीके सँ प्रश्न पुछू",
+    "ask_kvk_description": "खेतीक विधि, योजनाक बारेमे कोनो प्रश्न अछि, वा सलाह चाही? एतय प्रस्तुत करू।",
+    "query_history_title": "अहाँक प्रश्नक इतिहास",
+    "query_history_description": "पहिने प्रस्तुत कयल गेल अहाँक प्रश्नक स्थिति आ उत्तरक समीक्षा करू।"
+  },
+  "FarmerCartPage": {
+    "metadata_title": "शॉपिंग कार्ट | कृषक पोर्टल",
+    "page_title": "अहाँक शॉपिंग कार्ट",
+    "page_description": "आगाँ बढ़बासँ पहिने अपन चयनित वस्तुसभक समीक्षा करू (चेकआउट लागू नहि अछि)।"
+  },
+  "FarmerShopPage": {
+    "metadata_title": "उत्पाद किनू | कृषक पोर्टल",
+    "page_title": "उपलब्ध उत्पाद",
+    "page_description": "अपन खेतक लेल आवश्यक आपूर्ति खोजू। अपन कार्टमे वस्तु जोड़ू।"
+  },
+  "FarmerTrainingPage": {
+    "metadata_title": "प्रशिक्षण कार्यक्रम | कृषक पोर्टल",
+    "available_programs_title": "उपलब्ध प्रशिक्षण कार्यक्रम",
+    "available_programs_description": "आगामी प्रशिक्षण सत्र ब्राउज़ करू आ अपन कौशल बढ़ाब'क लेल पंजीकरण करू।",
+    "registered_programs_title": "अहाँक पंजीकृत कार्यक्रम",
+    "registered_programs_description": "अहाँ पंजीकृत कयल गेल प्रशिक्षण कार्यक्रमक समीक्षा करू।"
+  },
+  "KVKQueriesPage": {
+    "metadata_title": "कृषक प्रश्न | केवीके पोर्टल",
+    "page_title": "कृषक प्रश्न",
+    "page_description": "कृषक द्वारा प्रस्तुत प्रश्नक समीक्षा करू आ उत्तर प्रदान करू।"
+  },
+  "KVKTrainingPage": {
+    "metadata_title": "प्रशिक्षण कार्यक्रम प्रबंधित करू | केवीके पोर्टल",
+    "page_title": "प्रशिक्षण कार्यक्रम प्रबंधन",
+    "page_description": "नयाँ प्रशिक्षण सत्र बनाउ, वर्तमानमे अपडेट करू, आ कृषक पंजीकरण देखू।"
+  }
+}
