@@ -1,0 +1,88 @@
+
+{
+  "LoginPage": {
+    "mainTitle": "ಫಾರ್ಮ್‌ಈಸಿ ಕನೆಕ್ಟ್",
+    "subTitle": "ನಿಮ್ಮ ಖಾತೆಗೆ ಲಾಗಿನ್ ಮಾಡಿ",
+    "languageLabel": "ಭಾಷೆ"
+  },
+  "LoginForm": {
+    "title": "ಲಾಗಿನ್ ಮಾಡಿ",
+    "userIdLabel": "ಬಳಕೆದಾರರ ID",
+    "userIdPlaceholder": "ನಿಮ್ಮ ಬಳಕೆದಾರರ ID ನಮೂದಿಸಿ",
+    "passwordLabel": "ಪಾಸ್ವರ್ಡ್",
+    "passwordPlaceholder": "ನಿಮ್ಮ ಪಾಸ್ವರ್ಡ್ ನಮೂದಿಸಿ",
+    "loginButton": "ಲಾಗಿನ್",
+    "loggingInButton": "ಲಾಗಿನ್ ಆಗುತ್ತಿದೆ..."
+  },
+  "AppHeader": {
+    "kvkPortal": "ಕೆವಿಕೆ ಪೋರ್ಟಲ್",
+    "farmerPortal": "ರೈತ ಪೋರ್ಟಲ್",
+    "supplierPortal": "ಪೂರೈಕೆದಾರ ಪೋರ್ಟಲ್",
+    "defaultTitle": "ಫಾರ್ಮ್‌ಈಸಿ ಕನೆಕ್ಟ್",
+    "logout": "ಲಾಗ್ ಔಟ್",
+    "toggleTheme": "ಥೀಮ್ ಬದಲಿಸಿ",
+    "nav": {
+      "farmer_dashboard": "ಪ್ರಕಟಣೆಗಳು",
+      "farmer_training": "ತರಬೇತಿ",
+      "farmer_shop": "ಅಂಗಡಿ",
+      "farmer_cart": "ಕಾರ್ಟ್",
+      "farmer_ask_query": "ಕೆವಿಕೆ ಕೇಳಿ",
+      "kvk_announcements": "ಪ್ರಕಟಣೆಗಳು",
+      "kvk_training": "ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳು",
+      "kvk_queries": "ರೈತರ ಪ್ರಶ್ನೆಗಳು",
+      "supply_products": "ಉತ್ಪನ್ನಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
+    }
+  },
+  "FarmerDashboardPage": {
+    "title": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ | ರೈತ ಪೋರ್ಟಲ್",
+    "description": "KVK ಯಿಂದ ಪ್ರಕಟಣೆಗಳು ಮತ್ತು ಸಲಹೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ.",
+    "advisoryTitle": "ಬೆಳೆ ಮತ್ತು ಹವಾಮಾನ ಸಲಹೆ",
+    "announcementsTitle": "ಸಾಮಾನ್ಯ ಪ್ರಕಟಣೆಗಳು",
+    "announcementsDescription": "KVK ಯಿಂದ ಇತ್ತೀಚಿನ ನವೀಕರಣಗಳು ಮತ್ತು ಮಾಹಿತಿ."
+  },
+  "KVKAnnouncementsPage": {
+    "metadata_title": "ಪ್ರಕಟಣೆಗಳು ಮತ್ತು ಸಲಹೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ | KVK ಪೋರ್ಟಲ್",
+    "page_title": "ಸಂವಹನಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+    "general_announcements_title": "ಸಾಮಾನ್ಯ ಪ್ರಕಟಣೆಗಳು",
+    "crop_weather_advisory_title": "ಬೆಳೆ ಮತ್ತು ಹವಾಮಾನ ಸಲಹೆ"
+  },
+  "SupplyProductsPage": {
+    "metadata_title": "ಉತ್ಪನ್ನಗಳನ್ನು ನಿರ್ವಹಿಸಿ | ಪೂರೈಕೆದಾರ ಪೋರ್ಟಲ್",
+    "page_title": "ಉತ್ಪನ್ನ ನಿರ್ವಹಣೆ",
+    "page_description": "ಹೊಸ ಉತ್ಪನ್ನಗಳನ್ನು ಸೇರಿಸಿ ಅಥವಾ ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ದಾಸ್ತಾನುಗಳನ್ನು ನಿರ್ವಹಿಸಿ."
+  },
+  "FarmerAskQueryPage": {
+    "metadata_title": "ಕೆವಿಕೆ ಕೇಳಿ & ಪ್ರಶ್ನೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ | ರೈತ ಪೋರ್ಟಲ್",
+    "ask_kvk_title": "ಕೆವಿಕೆಗೆ ಪ್ರಶ್ನೆ ಕೇಳಿ",
+    "ask_kvk_description": "ಬೇಸಾಯ ಪದ್ಧತಿಗಳು, ಯೋಜನೆಗಳ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿವೆಯೇ ಅಥವಾ ಸಲಹೆ ಬೇಕೇ? ಇಲ್ಲಿ ಸಲ್ಲಿಸಿ.",
+    "query_history_title": "ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳ ಇತಿಹಾಸ",
+    "query_history_description": "ಹಿಂದೆ ಸಲ್ಲಿಸಿದ ನಿಮ್ಮ ಪ್ರಶ್ನೆಗಳ ಸ್ಥಿತಿ ಮತ್ತು ಉತ್ತರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."
+  },
+  "FarmerCartPage": {
+    "metadata_title": "ಶಾಪಿಂಗ್ ಕಾರ್ಟ್ | ರೈತ ಪೋರ್ಟಲ್",
+    "page_title": "ನಿಮ್ಮ ಶಾಪಿಂಗ್ ಕಾರ್ಟ್",
+    "page_description": "ಮುಂದುವರಿಯುವ ಮೊದಲು ನಿಮ್ಮ ಆಯ್ಕೆಮಾಡಿದ ವಸ್ತುಗಳನ್ನು ಪರಿಶೀಲಿಸಿ (ಚೆಕ್‌ಔಟ್ ಕಾರ್ಯಗತಗೊಂಡಿಲ್ಲ)."
+  },
+  "FarmerShopPage": {
+    "metadata_title": "ಉತ್ಪನ್ನಗಳನ್ನು ಖರೀದಿಸಿ | ರೈತ ಪೋರ್ಟಲ್",
+    "page_title": "ಲಭ್ಯವಿರುವ ಉತ್ಪನ್ನಗಳು",
+    "page_description": "ನಿಮ್ಮ ಫಾರ್ಮ್‌ಗೆ ಬೇಕಾದ ಸಾಮಗ್ರಿಗಳನ್ನು ಹುಡುಕಿ. ನಿಮ್ಮ ಕಾರ್ಟ್‌ಗೆ ವಸ್ತುಗಳನ್ನು ಸೇರಿಸಿ."
+  },
+  "FarmerTrainingPage": {
+    "metadata_title": "ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳು | ರೈತ ಪೋರ್ಟಲ್",
+    "available_programs_title": "ಲಭ್ಯವಿರುವ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳು",
+    "available_programs_description": "ಮುಂಬರುವ ತರಬೇತಿ ಅವಧಿಗಳನ್ನು ಬ್ರೌಸ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ಕೌಶಲ್ಯಗಳನ್ನು ಹೆಚ್ಚಿಸಲು ನೋಂದಾಯಿಸಿ.",
+    "registered_programs_title": "ನಿಮ್ಮ ನೋಂದಾಯಿತ ಕಾರ್ಯಕ್ರಮಗಳು",
+    "registered_programs_description": "ನೀವು ನೋಂದಾಯಿಸಿದ ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ಪರಿಶೀಲಿಸಿ."
+  },
+  "KVKQueriesPage": {
+    "metadata_title": "ರೈತರ ಪ್ರಶ್ನೆಗಳು | ಕೆವಿಕೆ ಪೋರ್ಟಲ್",
+    "page_title": "ರೈತರ ಪ್ರಶ್ನೆಗಳು",
+    "page_description": "ರೈತರು ಸಲ್ಲಿಸಿದ ಪ್ರಶ್ನೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಉತ್ತರಗಳನ್ನು ಒದಗಿಸಿ."
+  },
+  "KVKTrainingPage": {
+    "metadata_title": "ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮಗಳನ್ನು ನಿರ್ವಹಿಸಿ | ಕೆವಿಕೆ ಪೋರ್ಟಲ್",
+    "page_title": "ತರಬೇತಿ ಕಾರ್ಯಕ್ರಮ ನಿರ್ವಹಣೆ",
+    "page_description": "ಹೊಸ ತರಬೇತಿ ಅವಧಿಗಳನ್ನು ರಚಿಸಿ, ಅಸ್ತಿತ್ವದಲ್ಲಿರುವವನ್ನು ನವೀಕರಿಸಿ ಮತ್ತು ರೈತರ ನೋಂದಣಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ."
+  }
+}

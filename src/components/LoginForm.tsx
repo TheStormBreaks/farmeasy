@@ -1,3 +1,4 @@
+
 // src/components/LoginForm.tsx
 'use client';
 
@@ -18,12 +19,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'; // Added CardHeader, CardTitle
 import { useAuth } from '@/context/AuthContext';
 import type { UserType } from '@/types';
+import { useLanguage } from '@/context/LanguageContext'; // Import useLanguage
 
 const formSchema = z.object({
-  userId: z.string().min(1, { message: 'User ID is required' }),
+  userId: z.string().min(1, { message: 'User ID is required' }), // Message will be overridden by translations if key exists
   password: z.string().min(1, { message: 'Password is required' }),
 });
 
@@ -34,6 +36,7 @@ export default function LoginForm() {
   const { toast } = useToast();
   const { login } = useAuth();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { t } = useLanguage(); // Use language context
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -41,6 +44,8 @@ export default function LoginForm() {
       userId: '',
       password: '',
     },
+    // Update messages based on language if needed, though dynamic messages in Zod are complex.
+    // For simplicity, generic messages are kept, or rely on FormMessage component to use `t` if customized.
   });
 
   const onSubmit = (values: LoginFormValues) => {
@@ -55,7 +60,7 @@ export default function LoginForm() {
       redirectPath = '/kvk/announcements';
     } else if (userId === 'FARMER' && password === 'FARMER') {
       userType = 'FARMER';
-      redirectPath = '/farmer/dashboard'; // Keep default dashboard for now
+      redirectPath = '/farmer/dashboard';
     } else if (userId === 'SUPPLY' && password === 'SUPPLY') {
         userType = 'SUPPLY';
         redirectPath = '/supply/products';
@@ -64,24 +69,26 @@ export default function LoginForm() {
     if (userType) {
       login(userType);
       toast({
-        title: 'Login Successful',
-        description: `Welcome, ${userType}!`,
+        title: t('LoginForm.title'), // Example of using t for toast
+        description: `Welcome, ${userType}!`, // This part would need more complex translation if userType name is to be translated
       });
-      // Use router.replace for better history management after login
       router.replace(redirectPath);
     } else {
       toast({
         variant: 'destructive',
-        title: 'Login Failed',
-        description: 'Invalid User ID or Password.',
+        title: t('LoginForm.title'),
+        description: 'Invalid User ID or Password.', // Needs translation key if this message is to be translated
       });
-      setIsLoading(false); // Only set loading false on failure
+      setIsLoading(false);
     }
-    // Don't set isLoading to false on success immediately, let the navigation happen
   };
 
   return (
     <Card className="w-full max-w-md shadow-lg">
+      {/* Optional: Add a CardHeader with a translated title if desired */}
+      {/* <CardHeader>
+        <CardTitle>{t('LoginForm.title')}</CardTitle>
+      </CardHeader> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4 pt-6">
@@ -90,9 +97,9 @@ export default function LoginForm() {
               name="userId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>User ID</FormLabel>
+                  <FormLabel>{t('LoginForm.userIdLabel')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your User ID" {...field} disabled={isLoading} />
+                    <Input placeholder={t('LoginForm.userIdPlaceholder')} {...field} disabled={isLoading} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -103,9 +110,9 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>{t('LoginForm.passwordLabel')}</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Enter your password" {...field} disabled={isLoading} />
+                    <Input type="password" placeholder={t('LoginForm.passwordPlaceholder')} {...field} disabled={isLoading} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,7 +121,7 @@ export default function LoginForm() {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? 'Logging in...' : 'Login'}
+              {isLoading ? t('LoginForm.loggingInButton') : t('LoginForm.loginButton')}
             </Button>
           </CardFooter>
         </form>

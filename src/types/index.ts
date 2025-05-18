@@ -1,9 +1,7 @@
 
-
-
-
-
 export type UserType = 'KVK' | 'FARMER' | 'SUPPLY' | null;
+
+export type LanguageCode = 'en' | 'hi' | 'kn';
 
 export interface Announcement {
   id: string;

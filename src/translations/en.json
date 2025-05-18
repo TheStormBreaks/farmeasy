@@ -1,0 +1,88 @@
+
+{
+  "LoginPage": {
+    "mainTitle": "FarmEasy Connect",
+    "subTitle": "Login to your account",
+    "languageLabel": "Language"
+  },
+  "LoginForm": {
+    "title": "Login",
+    "userIdLabel": "User ID",
+    "userIdPlaceholder": "Enter your User ID",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "loginButton": "Login",
+    "loggingInButton": "Logging in..."
+  },
+  "AppHeader": {
+    "kvkPortal": "KVK Portal",
+    "farmerPortal": "Farmer Portal",
+    "supplierPortal": "Supplier Portal",
+    "defaultTitle": "FarmEasy Connect",
+    "logout": "Logout",
+    "toggleTheme": "Toggle theme",
+    "nav": {
+      "farmer_dashboard": "Announcements",
+      "farmer_training": "Training",
+      "farmer_shop": "Shop",
+      "farmer_cart": "Cart",
+      "farmer_ask_query": "Ask KVK",
+      "kvk_announcements": "Announcements",
+      "kvk_training": "Training Programs",
+      "kvk_queries": "Farmer Queries",
+      "supply_products": "Manage Products"
+    }
+  },
+  "FarmerDashboardPage": {
+    "title": "Dashboard | Farmer Portal",
+    "description": "View announcements and advisories from KVK.",
+    "advisoryTitle": "Crop & Weather Advisory",
+    "announcementsTitle": "General Announcements",
+    "announcementsDescription": "Latest updates and information from KVK."
+  },
+  "KVKAnnouncementsPage": {
+    "metadata_title": "Manage Announcements & Advisories | KVK Portal",
+    "page_title": "Manage Communications",
+    "general_announcements_title": "General Announcements",
+    "crop_weather_advisory_title": "Crop & Weather Advisory"
+  },
+  "SupplyProductsPage": {
+    "metadata_title": "Manage Products | Supplier Portal",
+    "page_title": "Product Management",
+    "page_description": "Add new products or manage existing inventory."
+  },
+  "FarmerAskQueryPage": {
+    "metadata_title": "Ask KVK & View Queries | Farmer Portal",
+    "ask_kvk_title": "Ask KVK a Question",
+    "ask_kvk_description": "Have a question about farming practices, schemes, or need advice? Submit it here.",
+    "query_history_title": "Your Query History",
+    "query_history_description": "Review the status and answers to your previously submitted questions."
+  },
+  "FarmerCartPage": {
+    "metadata_title": "Shopping Cart | Farmer Portal",
+    "page_title": "Your Shopping Cart",
+    "page_description": "Review your selected items before proceeding (checkout not implemented)."
+  },
+  "FarmerShopPage": {
+    "metadata_title": "Shop Products | Farmer Portal",
+    "page_title": "Available Products",
+    "page_description": "Find the supplies you need for your farm. Add items to your cart."
+  },
+  "FarmerTrainingPage": {
+    "metadata_title": "Training Programs | Farmer Portal",
+    "available_programs_title": "Available Training Programs",
+    "available_programs_description": "Browse upcoming training sessions and register to enhance your skills.",
+    "registered_programs_title": "Your Registered Programs",
+    "registered_programs_description": "Review the training programs you have registered for."
+  },
+  "KVKQueriesPage": {
+    "metadata_title": "Farmer Queries | KVK Portal",
+    "page_title": "Farmer Queries",
+    "page_description": "Review questions submitted by farmers and provide answers."
+  },
+  "KVKTrainingPage": {
+    "metadata_title": "Manage Training Programs | KVK Portal",
+    "page_title": "Training Program Management",
+    "page_description": "Create new training sessions, update existing ones, and view farmer registrations."
+  }
+}
