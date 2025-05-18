@@ -25,14 +25,22 @@ export function useAnnouncements() {
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
+        console.log("useAnnouncements: Hook mounted. Attempting to attach Firestore listener.");
+        if (!db) {
+            console.error("useAnnouncements Error: Firestore 'db' instance is not available. Cannot attach listener.");
+            setError(new Error("Firestore is not initialized."));
+            setIsLoading(false);
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
-        console.log("Attempting to connect to Firestore for announcements...");
-
+        
         const q = query(collection(db, ANNOUNCEMENTS_COLLECTION), orderBy('timestamp', 'desc'));
+        console.log("useAnnouncements: Query created for announcements collection.");
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            console.log("Received announcements snapshot. Processing...");
+            console.log("useAnnouncements: onSnapshot triggered. Processing query snapshot...");
             const fetchedAnnouncements: Announcement[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
@@ -48,14 +56,15 @@ export function useAnnouncements() {
                     timestamp: timestampMillis,
                 });
             });
+            console.log(`useAnnouncements: Fetched ${fetchedAnnouncements.length} announcements.`);
             setAnnouncements(fetchedAnnouncements);
             setIsLoading(false);
-            setError(null); // Clear previous errors on successful fetch
+            setError(null); 
         }, (err) => {
-            console.error("Error fetching announcements from Firestore:", err);
-            console.error("Error details:", JSON.stringify(err)); // Log more details
-            if (err.code === 'permission-denied') {
-                console.error("Firestore permission denied. Check your security rules.");
+            console.error("useAnnouncements: Error in onSnapshot listener:", err);
+            console.error("useAnnouncements: Error details:", JSON.stringify(err)); 
+            if ((err as any).code === 'permission-denied') {
+                console.error("useAnnouncements: Firestore permission denied. Check your security rules.");
                 setError(new Error('Permission denied. Please check Firestore security rules.'));
             } else {
                 setError(err instanceof Error ? err : new Error('Failed to fetch announcements.'));
@@ -63,50 +72,55 @@ export function useAnnouncements() {
             setIsLoading(false);
         });
 
+        console.log("useAnnouncements: onSnapshot listener attached successfully.");
+
         return () => {
-            console.log("Unsubscribing from announcements listener.");
+            console.log("useAnnouncements: Unsubscribing from announcements listener.");
             unsubscribe();
         }
     }, []);
 
     const addAnnouncement = useCallback(async (text: string): Promise<void> => {
-        // The component triggering addAnnouncement (e.g., AnnouncementForm)
-        // should manage its own submission loading state.
-        // The onSnapshot listener will handle updating the announcements list.
+        console.log("useAnnouncements: addAnnouncement called with text:", text);
+        if (!db) {
+            console.error("useAnnouncements Error: Firestore 'db' instance is not available for addAnnouncement.");
+            throw new Error("Firestore is not initialized.");
+        }
         try {
             await addDoc(collection(db, ANNOUNCEMENTS_COLLECTION), {
                 text: text,
                 timestamp: serverTimestamp(),
             });
+            console.log("useAnnouncements: Announcement added successfully to Firestore.");
         } catch (err: any) {
-            console.error("Failed to add announcement:", err);
-            throw err; // Re-throw for the component to catch and potentially show a toast
+            console.error("useAnnouncements: Failed to add announcement:", err);
+            throw err; 
         }
     }, []);
 
     const deleteAnnouncement = useCallback(async (id: string): Promise<void> => {
-        // The component triggering delete (ExistingAnnouncements) manages its own deleting state.
-        // The onSnapshot listener will handle updating the announcements list.
+        console.log("useAnnouncements: deleteAnnouncement called for ID:", id);
+        if (!db) {
+            console.error("useAnnouncements Error: Firestore 'db' instance is not available for deleteAnnouncement.");
+            throw new Error("Firestore is not initialized.");
+        }
         try {
             const docRef = doc(db, ANNOUNCEMENTS_COLLECTION, id);
             await deleteDoc(docRef);
+            console.log("useAnnouncements: Announcement deleted successfully from Firestore.");
         } catch (err: any) {
-            console.error("Failed to delete announcement:", err);
-             throw err; // Re-throw for the component to catch
+            console.error("useAnnouncements: Failed to delete announcement:", err);
+             throw err; 
         }
     }, []);
 
     const refreshAnnouncements = useCallback(() => {
-        // This function is less critical with onSnapshot, as updates are real-time.
-        // However, forcing a re-check could be done by re-setting up the listener,
-        // but that's complex and usually not needed if onSnapshot is working.
-        // For now, it just indicates that real-time updates are active.
-        console.log("Real-time updates for announcements are active via onSnapshot.");
+        console.log("useAnnouncements: refreshAnnouncements called. Real-time updates are active via onSnapshot.");
     }, []);
 
     return {
         announcements,
-        isLoading, // Reflects the listener's loading state for the initial fetch.
+        isLoading, 
         error,
         addAnnouncement,
         deleteAnnouncement,
