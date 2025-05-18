@@ -27,10 +27,12 @@ export function useAnnouncements() {
     useEffect(() => {
         setIsLoading(true);
         setError(null);
+        console.log("Attempting to connect to Firestore for announcements...");
 
         const q = query(collection(db, ANNOUNCEMENTS_COLLECTION), orderBy('timestamp', 'desc'));
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            console.log("Received announcements snapshot. Processing...");
             const fetchedAnnouncements: Announcement[] = [];
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
@@ -48,13 +50,23 @@ export function useAnnouncements() {
             });
             setAnnouncements(fetchedAnnouncements);
             setIsLoading(false);
+            setError(null); // Clear previous errors on successful fetch
         }, (err) => {
-            console.error("Error fetching announcements:", err);
-            setError(err instanceof Error ? err : new Error('Failed to fetch announcements'));
+            console.error("Error fetching announcements from Firestore:", err);
+            console.error("Error details:", JSON.stringify(err)); // Log more details
+            if (err.code === 'permission-denied') {
+                console.error("Firestore permission denied. Check your security rules.");
+                setError(new Error('Permission denied. Please check Firestore security rules.'));
+            } else {
+                setError(err instanceof Error ? err : new Error('Failed to fetch announcements.'));
+            }
             setIsLoading(false);
         });
 
-        return () => unsubscribe();
+        return () => {
+            console.log("Unsubscribing from announcements listener.");
+            unsubscribe();
+        }
     }, []);
 
     const addAnnouncement = useCallback(async (text: string): Promise<void> => {
@@ -86,6 +98,9 @@ export function useAnnouncements() {
 
     const refreshAnnouncements = useCallback(() => {
         // This function is less critical with onSnapshot, as updates are real-time.
+        // However, forcing a re-check could be done by re-setting up the listener,
+        // but that's complex and usually not needed if onSnapshot is working.
+        // For now, it just indicates that real-time updates are active.
         console.log("Real-time updates for announcements are active via onSnapshot.");
     }, []);
 
