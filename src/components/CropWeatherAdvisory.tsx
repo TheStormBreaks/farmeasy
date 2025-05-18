@@ -1,3 +1,4 @@
+
 // src/components/CropWeatherAdvisory.tsx
 'use client';
 
@@ -21,6 +22,7 @@ import { AlertTriangle, CloudSun, Loader2, Save } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useLanguage } from '@/context/LanguageContext'; // Import useLanguage
 
 const ADVISORY_DOC_ID = 'current_advisory'; // Fixed ID for the single advisory document
 const ADVISORY_COLLECTION = 'advisories'; // Collection to store the advisory
@@ -36,6 +38,7 @@ export default function CropWeatherAdvisory() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [currentAdvisory, setCurrentAdvisory] = useState('');
+  const { t } = useLanguage(); // Use language context
 
   const form = useForm<AdvisoryFormValues>({
     resolver: zodResolver(formSchema),
@@ -61,13 +64,17 @@ export default function CropWeatherAdvisory() {
         }
       } catch (error) {
         console.error("Failed to fetch advisory:", error);
-        toast({ variant: 'destructive', title: 'Error', description: 'Could not load current advisory.' });
+        toast({ 
+            variant: 'destructive', 
+            title: t('CropWeatherAdvisoryForm.errorTitle'), 
+            description: t('CropWeatherAdvisoryForm.errorDescriptionLoad')
+        });
       } finally {
         setIsFetching(false);
       }
     };
     fetchAdvisory();
-  }, [form, toast]);
+  }, [form, toast, t]); // Added t to dependency array
 
   const onSubmit = async (values: AdvisoryFormValues) => {
     setIsLoading(true);
@@ -79,15 +86,15 @@ export default function CropWeatherAdvisory() {
       });
       setCurrentAdvisory(values.advisoryText); // Update local state
       toast({
-        title: 'Success',
-        description: 'Crop & Weather Advisory updated successfully.',
+        title: t('CropWeatherAdvisoryForm.successTitle'),
+        description: t('CropWeatherAdvisoryForm.successDescription'),
       });
     } catch (error) {
       console.error("Failed to update advisory:", error);
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to update advisory. Please try again.',
+        title: t('CropWeatherAdvisoryForm.errorTitle'),
+        description: t('CropWeatherAdvisoryForm.errorDescriptionGeneral'),
       });
     } finally {
       setIsLoading(false);
@@ -99,10 +106,10 @@ export default function CropWeatherAdvisory() {
       <CardHeader>
         <CardTitle className="flex items-center">
             <AlertTriangle className="h-5 w-5 mr-2 text-destructive" />
-            Update Advisory
+            {t('CropWeatherAdvisoryForm.updateAdvisoryTitle')}
         </CardTitle>
         <CardDescription>
-            Post important warnings or advice regarding current crop conditions and weather forecasts. This will be prominently displayed to farmers.
+            {t('CropWeatherAdvisoryForm.advisoryDescription')}
         </CardDescription>
       </CardHeader>
       {isFetching ? (
@@ -124,11 +131,11 @@ export default function CropWeatherAdvisory() {
                           <FormItem>
                               <FormLabel className="flex items-center">
                                   <CloudSun className="h-4 w-4 mr-2"/>
-                                  Advisory Details
+                                  {t('CropWeatherAdvisoryForm.advisoryDetailsLabel')}
                               </FormLabel>
                               <FormControl>
                               <Textarea
-                                  placeholder="Enter the crop and weather advisory details here..."
+                                  placeholder={t('CropWeatherAdvisoryForm.placeholderText')}
                                   className="resize-none bg-background"
                                   rows={8}
                                   {...field}
@@ -142,7 +149,7 @@ export default function CropWeatherAdvisory() {
                   </CardContent>
                   <CardFooter>
                       <Button type="submit" disabled={isLoading} className="w-full">
-                          {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</> : <> <Save className="mr-2 h-4 w-4" /> Update Advisory</>}
+                          {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t('CropWeatherAdvisoryForm.updateButtonLoading')}</> : <> <Save className="mr-2 h-4 w-4" /> {t('CropWeatherAdvisoryForm.updateButton')}</>}
                       </Button>
                   </CardFooter>
               </form>

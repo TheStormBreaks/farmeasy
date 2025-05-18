@@ -1,3 +1,4 @@
+
 // src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -7,6 +8,7 @@ import { Toaster } from '@/components/ui/toaster';
 import AuthProvider from '@/context/AuthContext';
 import Providers from './providers'; // Import the QueryClientProvider component
 import { ThemeProvider } from '@/components/ThemeProvider'; // Import ThemeProvider
+import LanguageProvider from '@/context/LanguageContext'; // Import LanguageProvider
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -28,16 +30,18 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <ThemeProvider // Wrap with ThemeProvider
+        <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Providers> {/* Wrap with QueryClientProvider */}
+          <Providers>
             <AuthProvider>
-              {children}
-              <Toaster />
+              <LanguageProvider> {/* Wrap with LanguageProvider */}
+                {children}
+                <Toaster />
+              </LanguageProvider>
             </AuthProvider>
           </Providers>
          </ThemeProvider>

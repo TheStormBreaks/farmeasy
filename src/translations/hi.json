@@ -1,0 +1,112 @@
+
+{
+  "LoginPage": {
+    "mainTitle": "फार्मइजी कनेक्ट",
+    "subTitle": "अपने खाते में लॉग इन करें",
+    "languageLabel": "भाषा"
+  },
+  "LoginForm": {
+    "title": "लॉग इन करें",
+    "userIdLabel": "उपयोगकर्ता आईडी",
+    "userIdPlaceholder": "अपनी उपयोगकर्ता आईडी दर्ज करें",
+    "passwordLabel": "पासवर्ड",
+    "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
+    "loginButton": "लॉग इन करें",
+    "loggingInButton": "लॉग इन हो रहा है..."
+  },
+  "AppHeader": {
+    "kvkPortal": "केवीके पोर्टल",
+    "farmerPortal": "किसान पोर्टल",
+    "supplierPortal": "आपूर्तिकर्ता पोर्टल",
+    "defaultTitle": "फार्मइजी कनेक्ट",
+    "logout": "लॉग आउट",
+    "toggleTheme": "थीम बदलें",
+    "nav": {
+      "farmer_dashboard": "घोषणाएँ",
+      "farmer_training": "प्रशिक्षण",
+      "farmer_shop": "दुकान",
+      "farmer_cart": "कार्ट",
+      "farmer_ask_query": "केवीके से पूछें",
+      "kvk_announcements": "घोषणाएँ",
+      "kvk_training": "प्रशिक्षण कार्यक्रम",
+      "kvk_queries": "किसान प्रश्न",
+      "supply_products": "उत्पाद प्रबंधित करें"
+    }
+  },
+  "FarmerDashboardPage": {
+    "title": "डैशबोर्ड | किसान पोर्टल",
+    "description": "केवीके से घोषणाएँ और सलाहें देखें।",
+    "advisoryTitle": "फसल और मौसम सलाहकार",
+    "announcementsTitle": "सामान्य घोषणाएँ",
+    "announcementsDescription": "केवीके से नवीनतम अपडेट और जानकारी।"
+  },
+  "KVKAnnouncementsPage": {
+    "metadata_title": "घोषणाएँ और सलाहकार प्रबंधित करें | केवीके पोर्टल",
+    "page_title": "संचार प्रबंधित करें",
+    "general_announcements_title": "सामान्य घोषणाएँ",
+    "crop_weather_advisory_title": "फसल और मौसम सलाहकार"
+  },
+  "SupplyProductsPage": {
+    "metadata_title": "उत्पाद प्रबंधित करें | आपूर्तिकर्ता पोर्टल",
+    "page_title": "उत्पाद प्रबंधन",
+    "page_description": "नए उत्पाद जोड़ें या मौजूदा इन्वेंट्री प्रबंधित करें।"
+  },
+  "FarmerAskQueryPage": {
+    "metadata_title": "केवीके से पूछें और प्रश्न देखें | किसान पोर्टल",
+    "ask_kvk_title": "केवीके से प्रश्न पूछें",
+    "ask_kvk_description": "क्या आपके पास खेती की तकनीकों, योजनाओं के बारे में कोई प्रश्न है, या सलाह चाहिए? इसे यहाँ सबमिट करें।",
+    "query_history_title": "आपके प्रश्नों का इतिहास",
+    "query_history_description": "आपके द्वारा पहले सबमिट किए गए प्रश्नों की स्थिति और उत्तरों की समीक्षा करें।"
+  },
+  "FarmerCartPage": {
+    "metadata_title": "शॉपिंग कार्ट | किसान पोर्टल",
+    "page_title": "आपका शॉपिंग कार्ट",
+    "page_description": "आगे बढ़ने से पहले अपने चयनित आइटमों की समीक्षा करें (चेकआउट लागू नहीं किया गया है)।"
+  },
+  "FarmerShopPage": {
+    "metadata_title": "उत्पाद खरीदें | किसान पोर्टल",
+    "page_title": "उपलब्ध उत्पाद",
+    "page_description": "अपने खेत के लिए आवश्यक आपूर्तियाँ खोजें। अपनी कार्ट में आइटम जोड़ें।"
+  },
+  "FarmerTrainingPage": {
+    "metadata_title": "प्रशिक्षण कार्यक्रम | किसान पोर्टल",
+    "available_programs_title": "उपलब्ध प्रशिक्षण कार्यक्रम",
+    "available_programs_description": "आगामी प्रशिक्षण सत्र ब्राउज़ करें और अपने कौशल को बढ़ाने के लिए पंजीकरण करें।",
+    "registered_programs_title": "आपके पंजीकृत कार्यक्रम",
+    "registered_programs_description": "आपके द्वारा पंजीकृत प्रशिक्षण कार्यक्रमों की समीक्षा करें।"
+  },
+  "KVKQueriesPage": {
+    "metadata_title": "किसान प्रश्न | केवीके पोर्टल",
+    "page_title": "किसान प्रश्न",
+    "page_description": "किसानों द्वारा सबमिट किए गए प्रश्नों की समीक्षा करें और उत्तर प्रदान करें।"
+  },
+  "KVKTrainingPage": {
+    "metadata_title": "प्रशिक्षण कार्यक्रम प्रबंधित करें | केवीके पोर्टल",
+    "page_title": "प्रशिक्षण कार्यक्रम प्रबंधन",
+    "page_description": "नए प्रशिक्षण सत्र बनाएँ, मौजूदा को अपडेट करें, और किसान पंजीकरण देखें।"
+  },
+  "AnnouncementForm": {
+    "announcementDetailsLabel": "घोषणा विवरण",
+    "placeholderText": "घोषणा का विवरण यहाँ दर्ज करें...",
+    "postButtonLoading": "पोस्ट हो रहा है...",
+    "postButton": "घोषणा पोस्ट करें",
+    "successTitle": "सफलता",
+    "successDescription": "घोषणा सफलतापूर्वक पोस्ट की गई।",
+    "errorTitle": "त्रुटि",
+    "errorDescription": "घोषणा पोस्ट करने में विफल। कृपया पुनः प्रयास करें।"
+  },
+  "CropWeatherAdvisoryForm": {
+    "updateAdvisoryTitle": "सलाह अपडेट करें",
+    "advisoryDescription": "वर्तमान फसल स्थितियों और मौसम के पूर्वानुमानों के संबंध में महत्वपूर्ण चेतावनियाँ या सलाह पोस्ट करें। यह किसानों को प्रमुखता से प्रदर्शित किया जाएगा।",
+    "advisoryDetailsLabel": "सलाह विवरण",
+    "placeholderText": "फसल और मौसम सलाह का विवरण यहाँ दर्ज करें...",
+    "updateButtonLoading": "अपडेट हो रहा है...",
+    "updateButton": "सलाह अपडेट करें",
+    "saveIconLabel": "सहेजें",
+    "successTitle": "सफलता",
+    "successDescription": "फसल और मौसम सलाहकार सफलतापूर्वक अपडेट किया गया।",
+    "errorTitle": "त्रुटि",
+    "errorDescriptionGeneral": "सलाह अपडेट करने में विफल। कृपया पुनः प्रयास करें।",
+    "errorDescriptionLoad": "वर्तमान सलाह लोड नहीं हो सकी।"
+  }
+}
