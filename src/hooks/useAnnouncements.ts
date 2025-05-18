@@ -58,7 +58,6 @@ export function useAnnouncements() {
     }, []);
 
     const addAnnouncement = useCallback(async (text: string): Promise<void> => {
-        // Removed setIsLoading(true) and setIsLoading(false) from here.
         // The component triggering addAnnouncement (e.g., AnnouncementForm)
         // should manage its own submission loading state.
         // The onSnapshot listener will handle updating the announcements list.
@@ -69,13 +68,11 @@ export function useAnnouncements() {
             });
         } catch (err: any) {
             console.error("Failed to add announcement:", err);
-            // setError(err instanceof Error ? err : new Error('Failed to add announcement')); // Let component handle specific error display
             throw err; // Re-throw for the component to catch and potentially show a toast
         }
     }, []);
 
     const deleteAnnouncement = useCallback(async (id: string): Promise<void> => {
-        // No global isLoading manipulation for delete.
         // The component triggering delete (ExistingAnnouncements) manages its own deleting state.
         // The onSnapshot listener will handle updating the announcements list.
         try {
@@ -89,7 +86,6 @@ export function useAnnouncements() {
 
     const refreshAnnouncements = useCallback(() => {
         // This function is less critical with onSnapshot, as updates are real-time.
-        // Kept for potential explicit refresh scenarios if ever needed.
         console.log("Real-time updates for announcements are active via onSnapshot.");
     }, []);
 

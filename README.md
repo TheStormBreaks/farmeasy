@@ -1,6 +1,6 @@
 # FarmEasy Connect
 # language update
-
+fdfsfds
 This is a Next.js application connecting KVK centers, Farmers, and Suppliers. It facilitates communication, product management, and training program coordination.
 
 ## Prerequisites
