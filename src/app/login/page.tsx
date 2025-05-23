@@ -3,8 +3,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-// import LoginForm from '@/components/LoginForm'; // Original login form commented out
-import { Wheat } from 'lucide-react';
+import { Wheat, LogIn } from 'lucide-react'; // Added LogIn icon
 import {
   Select,
   SelectContent,
@@ -13,22 +12,29 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button'; // Import Button
 import { useLanguage } from '@/context/LanguageContext';
 import type { LanguageCode, UserType } from '@/types';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/card'; // Import Card for better styling
 
 export default function LoginPage() {
   const { language, setLanguage, t } = useLanguage();
   const { login, userType: authenticatedUserType, isLoading: authIsLoading } = useAuth();
   const router = useRouter();
+  const [selectedRole, setSelectedRole] = useState<UserType | ''>(''); // State to hold selected role
 
   const handleLanguageChange = (value: string) => {
     const newLang = value as LanguageCode;
     setLanguage(newLang);
   };
 
-  const handleQuickLogin = (selectedRole: string) => {
+  const handleRoleSelect = (value: string) => {
+    setSelectedRole(value as UserType);
+  };
+
+  const handleQuickLogin = () => {
     if (!selectedRole) return;
 
     let userTypeToLogin: UserType = null;
@@ -40,7 +46,11 @@ export default function LoginPage() {
     } else if (selectedRole === 'FARMER') {
       userTypeToLogin = 'FARMER';
       redirectPath = '/farmer/dashboard';
+    } else if (selectedRole === 'SUPPLY') {
+      userTypeToLogin = 'SUPPLY';
+      redirectPath = '/supply/products';
     }
+
 
     if (userTypeToLogin) {
       login(userTypeToLogin);
@@ -49,7 +59,7 @@ export default function LoginPage() {
     }
   };
 
-  // Redirect if already logged in (e.g., if user navigates back to /login)
+  // Redirect if already logged in
   useEffect(() => {
     if (!authIsLoading && authenticatedUserType) {
       if (authenticatedUserType === 'KVK') {
@@ -64,8 +74,8 @@ export default function LoginPage() {
 
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-6 bg-secondary/30">
-      <div className="w-full max-w-md space-y-8">
+    <main className="flex min-h-screen items-center justify-center p-6 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+      <Card className="w-full max-w-md space-y-8 p-8 shadow-2xl rounded-xl">
         <div className="text-center">
           <Wheat className="mx-auto h-12 w-12 text-primary" />
           <h1 className="mt-6 text-3xl font-extrabold text-foreground">
@@ -77,7 +87,7 @@ export default function LoginPage() {
         </div>
 
         {/* Language Selector */}
-        <div className="mx-auto max-w-sm space-y-4">
+        <div className="space-y-4">
           <div className='flex flex-col space-y-1.5 items-start'>
             <Label htmlFor="language-select" className="text-sm font-medium text-foreground">
               {t('LoginPage.languageLabel')}
@@ -100,18 +110,19 @@ export default function LoginPage() {
         </div>
 
         {/* Quick Login Dropdown */}
-        <div className="mx-auto max-w-sm space-y-4 pt-4">
+        <div className="space-y-4 pt-4">
           <div className='flex flex-col space-y-1.5 items-start'>
             <Label htmlFor="quick-login-select" className="text-sm font-medium text-foreground">
-              Prototype: Select Role to Login
+              Prototype: Select Role
             </Label>
-            <Select onValueChange={handleQuickLogin}>
+            <Select onValueChange={handleRoleSelect} value={selectedRole || undefined}>
               <SelectTrigger id="quick-login-select" className="w-full">
-                <SelectValue placeholder="Select role..." />
+                <SelectValue placeholder="Select role to login..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="FARMER">Login as Farmer</SelectItem>
-                <SelectItem value="KVK">Login as KVK</SelectItem>
+                <SelectItem value="FARMER">Farmer</SelectItem>
+                <SelectItem value="KVK">KVK Official</SelectItem>
+                <SelectItem value="SUPPLY">Supplier</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
@@ -120,13 +131,16 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Original LoginForm - Commented out for the prototype */}
-        {/* 
-        <Card className="w-full max-w-md shadow-lg">
-           <LoginForm />
-        </Card> 
-        */}
-      </div>
+        {/* Login Button - appears after role is selected */}
+        {selectedRole && (
+          <div className="pt-4">
+            <Button onClick={handleQuickLogin} className="w-full" disabled={authIsLoading}>
+              <LogIn className="mr-2 h-4 w-4" />
+              Login as {selectedRole}
+            </Button>
+          </div>
+        )}
+      </Card>
     </main>
   );
 }
