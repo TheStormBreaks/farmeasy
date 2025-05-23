@@ -13,19 +13,19 @@ import {
     onSnapshot,
     Timestamp,
     doc,
-    where, 
+    where,
     serverTimestamp,
-    writeBatch, 
-    getDocs, 
-    limit // Import limit
+    writeBatch,
+    getDocs,
+    limit
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Product, CartItem } from '@/types';
 
 const PRODUCTS_COLLECTION = 'products';
-const CARTS_COLLECTION = 'carts'; 
+const CARTS_COLLECTION = 'carts';
 
-export function useProducts(supplierId?: string) {
+export function useProducts(supplierIdParam?: string) { // Renamed to avoid conflict
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
@@ -35,22 +35,20 @@ export function useProducts(supplierId?: string) {
         setError(null);
 
         let q;
-        if (supplierId) {
+        if (supplierIdParam) {
             q = query(
                 collection(db, PRODUCTS_COLLECTION),
-                where('supplierId', '==', supplierId),
+                where('supplierId', '==', supplierIdParam),
                 orderBy('createdAt', 'desc'),
-                limit(50) // Limit for a single supplier's products
+                limit(50)
             );
         } else {
-            // Fetch all products (e.g., for Farmer view), limited
             q = query(
-                collection(db, PRODUCTS_COLLECTION), 
+                collection(db, PRODUCTS_COLLECTION),
                 orderBy('createdAt', 'desc'),
-                limit(50) // Limit for all products view
+                limit(50)
             );
         }
-
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             const fetchedProducts: Product[] = [];
@@ -70,6 +68,7 @@ export function useProducts(supplierId?: string) {
                     price: data.price,
                     availableQuantity: data.availableQuantity,
                     supplierId: data.supplierId,
+                    supplierUpiId: data.supplierUpiId || '', // Ensure supplierUpiId is present
                     createdAt: createdAtMillis,
                     updatedAt: updatedAtMillis,
                 });
@@ -83,13 +82,15 @@ export function useProducts(supplierId?: string) {
         });
 
         return () => unsubscribe();
-    }, [supplierId]); 
+    }, [supplierIdParam]);
 
     const addProduct = useCallback(async (productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> => {
         if (!productData.supplierId) {
             throw new Error('Supplier ID is required to add a product.');
         }
-        // setIsLoading(true); // Removed to let form handle its own loading state
+        if (!productData.supplierUpiId) {
+            throw new Error('Supplier UPI ID is required to add a product.');
+        }
         try {
             const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), {
                 ...productData,
@@ -99,14 +100,11 @@ export function useProducts(supplierId?: string) {
              return docRef.id;
         } catch (err: any) {
             console.error("Failed to add product:", err);
-            // setError(err instanceof Error ? err : new Error('Failed to add product')); // Let form handle error display
             throw err;
-        } 
-        // finally { setIsLoading(false); }
+        }
     }, []);
 
     const updateProduct = useCallback(async (id: string, updates: Partial<Omit<Product, 'id' | 'supplierId' | 'createdAt'>>): Promise<void> => {
-        // setIsLoading(true); // Removed to let form handle its own loading state
         try {
             const docRef = doc(db, PRODUCTS_COLLECTION, id);
             await updateDoc(docRef, {
@@ -117,13 +115,12 @@ export function useProducts(supplierId?: string) {
                 name: updates.name,
                 description: updates.description,
                 price: updates.price,
+                supplierUpiId: updates.supplierUpiId, // Pass UPI ID for cart updates
              });
         } catch (err: any) {
             console.error("Failed to update product:", err);
-            // setError(err instanceof Error ? err : new Error('Failed to update product')); // Let form handle error display
             throw err;
-        } 
-        // finally { setIsLoading(false); }
+        }
     }, []);
 
     const deleteProduct = useCallback(async (id: string): Promise<void> => {
@@ -137,7 +134,6 @@ export function useProducts(supplierId?: string) {
         }
     }, []);
 
-
     const updateProductInCarts = async (productId: string, productUpdates: Partial<CartItem['productDetails']>) => {
         const cartSnapshots = await getDocs(collection(db, CARTS_COLLECTION));
         const batch = writeBatch(db);
@@ -149,15 +145,19 @@ export function useProducts(supplierId?: string) {
 
             if (itemIndex > -1) {
                 const updatedProductDetails = {
-                    ...items[itemIndex].productDetails, 
-                    ...productUpdates, 
+                    ...items[itemIndex].productDetails,
+                    ...productUpdates,
                  };
-                 Object.keys(updatedProductDetails).forEach(key => updatedProductDetails[key as keyof typeof updatedProductDetails] === undefined && delete updatedProductDetails[key as keyof typeof updatedProductDetails]);
+                 // Clean undefined keys that might come from partial updates
+                 Object.keys(updatedProductDetails).forEach(key => 
+                    (updatedProductDetails as any)[key] === undefined && delete (updatedProductDetails as any)[key]
+                 );
+
 
                 const updatedItems = [...items];
                 updatedItems[itemIndex] = {
                     ...updatedItems[itemIndex],
-                    productDetails: updatedProductDetails,
+                    productDetails: updatedProductDetails as Product, // Cast as Product assuming all necessary fields are there
                 };
                 batch.update(cartDoc.ref, { items: updatedItems, lastUpdated: serverTimestamp() });
             }
@@ -170,7 +170,6 @@ export function useProducts(supplierId?: string) {
             console.error("Error updating product in carts:", error);
         }
     };
-
 
     const removeProductFromCarts = async (productId: string) => {
          const cartSnapshots = await getDocs(collection(db, CARTS_COLLECTION));
@@ -195,7 +194,7 @@ export function useProducts(supplierId?: string) {
     };
 
     return {
-        products, 
+        products,
         isLoading,
         error,
         addProduct,

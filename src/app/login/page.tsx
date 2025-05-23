@@ -34,6 +34,13 @@ export default function LoginPage() {
     setSelectedRole(value as UserType);
   };
 
+  const getTranslatedRoleName = (role: UserType | ''): string => {
+    if (role === 'FARMER') return t('LoginPage.roleFarmer');
+    if (role === 'KVK') return t('LoginPage.roleKVKOfficial');
+    if (role === 'SUPPLY') return t('LoginPage.roleSupplier');
+    return '';
+  }
+
   const handleQuickLogin = () => {
     if (!selectedRole) return;
 
@@ -113,20 +120,20 @@ export default function LoginPage() {
         <div className="space-y-4 pt-4">
           <div className='flex flex-col space-y-1.5 items-start'>
             <Label htmlFor="quick-login-select" className="text-sm font-medium text-foreground">
-              Prototype: Select Role
+              {t('LoginPage.prototypeSelectRoleLabel')}
             </Label>
             <Select onValueChange={handleRoleSelect} value={selectedRole || undefined}>
               <SelectTrigger id="quick-login-select" className="w-full">
-                <SelectValue placeholder="Select role to login..." />
+                <SelectValue placeholder={t('LoginPage.prototypeSelectRolePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="FARMER">Farmer</SelectItem>
-                <SelectItem value="KVK">KVK Official</SelectItem>
-                <SelectItem value="SUPPLY">Supplier</SelectItem>
+                <SelectItem value="FARMER">{t('LoginPage.roleFarmer')}</SelectItem>
+                <SelectItem value="KVK">{t('LoginPage.roleKVKOfficial')}</SelectItem>
+                <SelectItem value="SUPPLY">{t('LoginPage.roleSupplier')}</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
-              This is a temporary quick login for prototype demonstration.
+              {t('LoginPage.prototypeDescription')}
             </p>
           </div>
         </div>
@@ -136,7 +143,7 @@ export default function LoginPage() {
           <div className="pt-4">
             <Button onClick={handleQuickLogin} className="w-full" disabled={authIsLoading}>
               <LogIn className="mr-2 h-4 w-4" />
-              Login as {selectedRole}
+              {t('LoginPage.loginAsButtonPrefix')}{getTranslatedRoleName(selectedRole)}
             </Button>
           </div>
         )}

@@ -1,50 +1,62 @@
+
 // src/components/ShoppingCartDisplay.tsx
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Script from 'next/script';
 import { useCart } from '@/hooks/useCart';
 import { useAuth } from '@/context/AuthContext';
-import { useProducts } from '@/hooks/useProducts'; // To get current stock levels
+import { useProducts } from '@/hooks/useProducts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableFooter } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AlertCircle, Loader2, Minus, Plus, Trash2, ShoppingCart } from 'lucide-react';
+import { AlertCircle, Loader2, Minus, Plus, Trash2, ShoppingCart as ShoppingCartIcon, CreditCard } from 'lucide-react'; // Renamed ShoppingCart to avoid conflict
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import type { Product } from '@/types';
+
+// Define Razorpay at window level for TypeScript
+declare global {
+    interface Window {
+        Razorpay: any;
+    }
+}
 
 export default function ShoppingCartDisplay() {
-    const { userId } = useAuth();
+    const { userId, userType } // Assuming userType might have email/phone for prefill
+     = useAuth();
     const { cart, isLoading, error, updateItemQuantity, removeItemFromCart, clearCart } = useCart(userId);
-    const { products, isLoading: productsLoading } = useProducts(); // Fetch all products to check stock
+    const { products, isLoading: productsLoading, products: allProducts } = useProducts(); // Fetch all products to check stock and get UPI
     const { toast } = useToast();
-    const [isUpdating, setIsUpdating] = useState<string | null>(null); // Track which item quantity is being updated
+    const [isUpdating, setIsUpdating] = useState<string | null>(null);
     const [isClearing, setIsClearing] = useState(false);
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+    const [razorpayLoaded, setRazorpayLoaded] = useState(false);
 
-     // Create a map for easy product lookup by ID
-     const productMap = useMemo(() => {
-        const map = new Map<string, { availableQuantity: number; price: number; name: string }>();
-        products.forEach(p => map.set(p.id, { availableQuantity: p.availableQuantity, price: p.price, name: p.name }));
+
+    const productMap = useMemo(() => {
+        const map = new Map<string, Product>(); // Store full product for UPI access
+        allProducts.forEach(p => map.set(p.id, p));
         return map;
-    }, [products]);
+    }, [allProducts]);
 
 
     const handleQuantityChange = async (productId: string, newQuantity: number) => {
          const productInfo = productMap.get(productId);
          const maxQuantity = productInfo?.availableQuantity ?? 0;
 
-        if (newQuantity < 0) return; // Prevent negative quantity
+        if (newQuantity < 0) return;
         if (newQuantity > maxQuantity) {
              toast({
                 variant: 'destructive',
                 title: 'Stock Limit Reached',
                 description: `Only ${maxQuantity} units of ${productInfo?.name || 'this item'} available.`,
             });
-             newQuantity = maxQuantity; // Adjust to max available
+             newQuantity = maxQuantity;
         }
-
 
         setIsUpdating(productId);
         try {
@@ -53,7 +65,6 @@ export default function ShoppingCartDisplay() {
                 toast({ title: 'Item Removed', description: `Removed from cart.` });
             } else {
                 await updateItemQuantity(productId, newQuantity);
-                // Optional: Add a success toast here if needed, but might be too noisy
             }
         } catch (err) {
             console.error("Failed to update cart quantity:", err);
@@ -63,14 +74,11 @@ export default function ShoppingCartDisplay() {
         }
     };
 
-
      const handleClearCart = async () => {
         setIsClearing(true);
          try {
             await clearCart();
-            // Toast is handled within useCart hook now
          } catch (err) {
-            // Error toast handled within useCart hook now
             console.error("Error in clearCart component handler:", err);
          } finally {
             setIsClearing(false);
@@ -81,10 +89,89 @@ export default function ShoppingCartDisplay() {
         if (!cart || !cart.items) return 0;
         return cart.items.reduce((total, item) => {
             const productInfo = productMap.get(item.productId);
-            const price = productInfo?.price ?? item.productDetails?.price ?? 0; // Use map price first, fallback to stored details
+            const price = productInfo?.price ?? item.productDetails?.price ?? 0;
             return total + price * item.quantity;
         }, 0);
     };
+
+    const handleProceedToCheckout = async () => {
+        if (!userId || !cart || cart.items.length === 0) {
+            toast({ title: "Cart Empty", description: "Please add items to your cart before proceeding.", variant: "destructive" });
+            return;
+        }
+        if (!process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID === 'YOUR_RAZORPAY_KEY_ID_HERE') {
+            toast({ title: "Razorpay Not Configured", description: "Payment gateway is not configured by the admin.", variant: "destructive" });
+            console.error("Razorpay Key ID not found in environment variables.");
+            return;
+        }
+        if (!razorpayLoaded) {
+            toast({ title: "Payment Gateway Loading", description: "Please wait for Razorpay to load.", variant: "default" });
+            return;
+        }
+
+        setIsProcessingPayment(true);
+
+        const totalAmount = calculateTotal();
+        const firstCartItem = cart.items[0];
+        const firstProductInfo = productMap.get(firstCartItem.productId);
+        const supplierUpiIdForNotes = firstProductInfo?.supplierUpiId || "N/A";
+
+        const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+            amount: totalAmount * 100, // Amount in paise
+            currency: "INR",
+            name: "FarmEasy Connect Purchase",
+            description: `Payment for ${cart.items.length} item(s)`,
+            // image: "/logo.png", // Optional: Your logo
+            handler: function (response: any) {
+                // This function is called after payment is successful
+                toast({ title: "Payment Successful", description: `Payment ID: ${response.razorpay_payment_id}` });
+                // Here you would typically:
+                // 1. Verify the payment signature on your backend (IMPORTANT for production)
+                // 2. Create an order in your database
+                // 3. Clear the cart
+                clearCart();
+                setIsProcessingPayment(false);
+            },
+            prefill: {
+                // name: "Farmer Name", // Get from auth context if available
+                // email: "farmer@example.com", // Get from auth context
+                // contact: "9999999999" // Get from auth context
+            },
+            notes: {
+                cart_items: cart.items.map(item => `${item.productDetails?.name || productMap.get(item.productId)?.name} (Qty: ${item.quantity})`).join(', '),
+                userId: userId,
+                supplier_upi_id_of_first_item: supplierUpiIdForNotes, // For info
+            },
+            theme: {
+                color: "#16A34A" // Primary green color
+            },
+            modal: {
+                ondismiss: function() {
+                    setIsProcessingPayment(false);
+                    toast({ title: "Payment Cancelled", description: "Payment process was cancelled.", variant: "default" });
+                }
+            }
+        };
+
+        try {
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response: any){
+                toast({
+                    title: "Payment Failed",
+                    description: `Error: ${response.error.description} (Code: ${response.error.code})`,
+                    variant: "destructive"
+                });
+                setIsProcessingPayment(false);
+            });
+            rzp.open();
+        } catch (error) {
+            console.error("Razorpay Error:", error);
+            toast({ title: "Payment Error", description: "Could not initiate payment. Please try again.", variant: "destructive" });
+            setIsProcessingPayment(false);
+        }
+    };
+
 
     const renderSkeleton = () => (
         <TableRow>
@@ -99,6 +186,11 @@ export default function ShoppingCartDisplay() {
     if (isLoading || productsLoading) {
          return (
              <Card className="shadow-lg">
+                <Script
+                    id="razorpay-checkout-js"
+                    src="https://checkout.razorpay.com/v1/checkout.js"
+                    onLoad={() => setRazorpayLoaded(true)}
+                />
                  <CardHeader>
                      <Skeleton className="h-6 w-1/2" />
                      <Skeleton className="h-4 w-3/4 mt-1" />
@@ -126,8 +218,9 @@ export default function ShoppingCartDisplay() {
                         </TableFooter>
                      </Table>
                  </CardContent>
-                 <CardFooter className="flex justify-end">
-                     <Skeleton className="h-10 w-32" />
+                 <CardFooter className="flex justify-between items-center">
+                     <Skeleton className="h-10 w-24" />
+                     <Skeleton className="h-10 w-40" />
                  </CardFooter>
              </Card>
          );
@@ -148,9 +241,14 @@ export default function ShoppingCartDisplay() {
      if (!cart || cart.items.length === 0) {
         return (
             <Card className="shadow-md text-center">
+                <Script
+                    id="razorpay-checkout-js"
+                    src="https://checkout.razorpay.com/v1/checkout.js"
+                    onLoad={() => setRazorpayLoaded(true)}
+                />
                 <CardHeader>
                     <CardTitle>Your Cart is Empty</CardTitle>
-                     <ShoppingCart className="mx-auto h-16 w-16 text-muted-foreground my-4" />
+                     <ShoppingCartIcon className="mx-auto h-16 w-16 text-muted-foreground my-4" />
                 </CardHeader>
                 <CardContent>
                     <p className="text-muted-foreground mb-4">Looks like you haven't added any products yet.</p>
@@ -165,6 +263,18 @@ export default function ShoppingCartDisplay() {
 
     return (
         <Card className="shadow-lg">
+            <Script
+                id="razorpay-checkout-js"
+                src="https://checkout.razorpay.com/v1/checkout.js"
+                onLoad={() => {
+                    console.log("Razorpay script loaded.");
+                    setRazorpayLoaded(true);
+                }}
+                onError={(e) => {
+                    console.error("Failed to load Razorpay script:", e);
+                    toast({ title: "Payment Error", description: "Could not load payment gateway.", variant: "destructive"});
+                }}
+            />
             <CardHeader>
                 <CardTitle>Cart Summary</CardTitle>
                 <CardDescription>Review and modify your items.</CardDescription>
@@ -185,7 +295,7 @@ export default function ShoppingCartDisplay() {
                             const productInfo = productMap.get(item.productId);
                              const price = productInfo?.price ?? item.productDetails?.price ?? 0;
                              const name = productInfo?.name ?? item.productDetails?.name ?? 'Product not found';
-                             const maxQuantity = productInfo?.availableQuantity ?? item.quantity; // Use current quantity if product info missing (conservative)
+                             const maxQuantity = productInfo?.availableQuantity ?? item.quantity;
                              const subtotal = price * item.quantity;
                              const isUpdatingThis = isUpdating === item.productId;
                              const quantityExceedsStock = item.quantity > maxQuantity;
@@ -215,9 +325,9 @@ export default function ShoppingCartDisplay() {
                                                 type="number"
                                                 className={`h-8 w-12 text-center border-l border-r rounded-none focus-visible:ring-0 ${quantityExceedsStock ? 'border-destructive ring-destructive focus-visible:ring-destructive' : ''}`}
                                                 value={item.quantity}
-                                                 onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10) || 0)} // Handle NaN
+                                                 onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value, 10) || 0)}
                                                 min="0"
-                                                 max={maxQuantity} // Visually indicate max, logic handles enforcement
+                                                 max={maxQuantity}
                                                  disabled={isUpdatingThis}
                                             />
                                             <Button
@@ -231,13 +341,13 @@ export default function ShoppingCartDisplay() {
                                             </Button>
                                          </div>
                                     </TableCell>
-                                    <TableCell className="text-right">${price.toFixed(2)}</TableCell>
-                                    <TableCell className="text-right">${subtotal.toFixed(2)}</TableCell>
+                                    <TableCell className="text-right">₹{price.toFixed(2)}</TableCell>
+                                    <TableCell className="text-right">₹{subtotal.toFixed(2)}</TableCell>
                                     <TableCell className="text-right">
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => handleQuantityChange(item.productId, 0)} // Set quantity to 0 to remove
+                                            onClick={() => handleQuantityChange(item.productId, 0)}
                                             disabled={isUpdating === item.productId}
                                             aria-label="Remove item"
                                             className="text-destructive hover:text-destructive/80"
@@ -252,7 +362,7 @@ export default function ShoppingCartDisplay() {
                      <TableFooter>
                         <TableRow>
                              <TableCell colSpan={3} className="text-right font-bold text-lg">Total:</TableCell>
-                             <TableCell className="text-right font-bold text-lg">${calculateTotal().toFixed(2)}</TableCell>
+                             <TableCell className="text-right font-bold text-lg">₹{calculateTotal().toFixed(2)}</TableCell>
                              <TableCell>
                                  <Button
                                      variant="outline"
@@ -270,9 +380,18 @@ export default function ShoppingCartDisplay() {
                      </TableFooter>
                 </Table>
             </CardContent>
-             <CardFooter className="flex justify-end">
-                {/* Add Checkout Button later if needed */}
-                 <Button disabled>Proceed to Checkout (Not Implemented)</Button>
+             <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-2">
+                <Button variant="outline" asChild>
+                    <Link href="/farmer/shop">Continue Shopping</Link>
+                </Button>
+                 <Button
+                    onClick={handleProceedToCheckout}
+                    disabled={isProcessingPayment || !razorpayLoaded || !cart || cart.items.length === 0}
+                    className="w-full sm:w-auto"
+                >
+                    {isProcessingPayment ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CreditCard className="mr-2 h-4 w-4" />}
+                    Proceed to Checkout
+                </Button>
             </CardFooter>
         </Card>
     );

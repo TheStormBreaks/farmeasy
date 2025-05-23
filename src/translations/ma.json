@@ -3,7 +3,14 @@
   "LoginPage": {
     "mainTitle": "फार्मइजी कनेक्ट",
     "subTitle": "अपन खातामे लॉग इन करू",
-    "languageLabel": "भाषा"
+    "languageLabel": "भाषा",
+    "prototypeSelectRoleLabel": "प्रोटोटाइप: भूमिका चुनू",
+    "prototypeSelectRolePlaceholder": "लॉग इन करबाक लेल भूमिका चुनू...",
+    "roleFarmer": "कृषक",
+    "roleKVKOfficial": "केवीके अधिकारी",
+    "roleSupplier": "आपूर्तिकर्ता",
+    "prototypeDescription": "ई प्रोटोटाइप प्रदर्शनक लेल एकटा अस्थायी त्वरित लॉग इन अछि।",
+    "loginAsButtonPrefix": "के रूप मे लॉग इन करू "
   },
   "LoginForm": {
     "title": "लॉग इन करू",
@@ -126,5 +133,11 @@
     "availablePdfBulletinsCardDescription": "बाहरी बुलेटिन खोलबाक लेल क्लिक करू। शीर्ष {count} बुलेटिन देखाएल जा रहल अछि।",
     "openButtonText": "खोलू",
     "inNewTabText": "नयाँ टैबमे"
+  },
+  "ExistingAnnouncements": {
+    "noAnnouncementsTitle": "कोनो घोषणा नहि",
+    "noAnnouncementsDescription": "वर्तमान मे कोनो सामान्य घोषणा पोस्ट नहि कएल गेल अछि।",
+    "kvkPrompt": "नयाँ घोषणा पोस्ट करबाक लेल उपर्युक्त फॉर्मक उपयोग करू।",
+    "farmerPrompt": "केवीके सँ अपडेटक लेल बादमे देखू।"
   }
 }

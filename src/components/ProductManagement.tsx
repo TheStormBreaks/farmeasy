@@ -1,3 +1,4 @@
+
 // src/components/ProductManagement.tsx
 'use client';
 
@@ -33,6 +34,7 @@ const productFormSchema = z.object({
         (val) => parseInt(z.string().parse(val), 10), // Convert string input to integer
         z.number({ invalid_type_error: 'Quantity must be a number.' }).int().nonnegative({ message: 'Quantity cannot be negative.' })
     ),
+    supplierUpiId: z.string().min(5, {message: 'Please enter a valid UPI ID (e.g., user@bank or mobilenumber@upi)'}).max(100, {message: 'UPI ID seems too long.'}),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -53,6 +55,7 @@ export default function ProductManagement() {
             description: '',
             price: 0,
             availableQuantity: 0,
+            supplierUpiId: '',
         },
     });
 
@@ -64,12 +67,19 @@ export default function ProductManagement() {
                 description: editingProduct.description,
                 price: editingProduct.price,
                 availableQuantity: editingProduct.availableQuantity,
+                supplierUpiId: editingProduct.supplierUpiId || '',
             });
              setIsFormOpen(true); // Open dialog when editingProduct is set
         } else {
-            form.reset(); // Reset form when closing or adding new
+            form.reset({ // Reset to initial default values when adding new or closing
+                 name: '',
+                 description: '',
+                 price: 0,
+                 availableQuantity: 0,
+                 supplierUpiId: '',
+            });
         }
-    }, [editingProduct, form]);
+    }, [editingProduct, form, isFormOpen]); // Added isFormOpen to dependencies to ensure reset when dialog is closed via X
 
     const handleFormSubmit = async (values: ProductFormValues) => {
         if (!userId) {
@@ -89,7 +99,7 @@ export default function ProductManagement() {
             }
             setEditingProduct(null); // Reset editing state
             setIsFormOpen(false); // Close dialog
-            form.reset(); // Reset form fields
+            form.reset({ name: '', description: '', price: 0, availableQuantity: 0, supplierUpiId: ''});
         } catch (err) {
             console.error("Failed to save product:", err);
             toast({ variant: 'destructive', title: 'Error', description: 'Failed to save product. Please try again.' });
@@ -113,19 +123,19 @@ export default function ProductManagement() {
 
     const openAddForm = () => {
         setEditingProduct(null);
-        form.reset(); // Ensure form is clear for adding
+        form.reset({ name: '', description: '', price: 0, availableQuantity: 0, supplierUpiId: ''});
         setIsFormOpen(true);
     };
 
     const openEditForm = (product: Product) => {
         setEditingProduct(product);
-        // Form reset is handled by the useEffect hook
+        // Form reset is handled by the useEffect hook based on editingProduct
     };
 
      const onDialogClose = (open: boolean) => {
         if (!open) {
              setEditingProduct(null); // Clear editing state when dialog closes
-             form.reset();
+             form.reset({ name: '', description: '', price: 0, availableQuantity: 0, supplierUpiId: ''});
         }
         setIsFormOpen(open);
      }
@@ -137,6 +147,7 @@ export default function ProductManagement() {
             <TableCell><Skeleton className="h-4 w-1/2" /></TableCell>
             <TableCell><Skeleton className="h-4 w-1/4" /></TableCell>
             <TableCell><Skeleton className="h-4 w-1/4" /></TableCell>
+            <TableCell><Skeleton className="h-4 w-1/4" /></TableCell> {/* For UPI */}
             <TableCell className="text-right space-x-2">
                 <Skeleton className="h-8 w-8 inline-block" />
                 <Skeleton className="h-8 w-8 inline-block" />
@@ -156,12 +167,12 @@ export default function ProductManagement() {
                         <DialogTrigger asChild>
                              <Button onClick={openAddForm}><PackagePlus className="mr-2 h-4 w-4" /> Add Product</Button>
                         </DialogTrigger>
-                         <DialogContent className="sm:max-w-[525px]">
+                         <DialogContent className="sm:max-w-[625px]"> {/* Slightly wider for new field */}
                             <DialogHeader>
                                  <DialogTitle>{editingProduct ? 'Edit Product' : 'Add New Product'}</DialogTitle>
                             </DialogHeader>
                             <Form {...form}>
-                                 <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
+                                 <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 pt-2">
                                     <FormField
                                         control={form.control}
                                         name="name"
@@ -182,13 +193,13 @@ export default function ProductManagement() {
                                             <FormItem>
                                             <FormLabel>Description</FormLabel>
                                             <FormControl>
-                                                 <Textarea placeholder="Detailed description of the product..." {...field} disabled={isSubmitting} rows={4} />
+                                                 <Textarea placeholder="Detailed description of the product..." {...field} disabled={isSubmitting} rows={3} />
                                             </FormControl>
                                             <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                     <div className="grid grid-cols-2 gap-4">
+                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <FormField
                                             control={form.control}
                                             name="price"
@@ -216,9 +227,22 @@ export default function ProductManagement() {
                                             )}
                                         />
                                     </div>
-                                     <DialogFooter>
+                                     <FormField
+                                        control={form.control}
+                                        name="supplierUpiId"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                            <FormLabel>Your UPI ID (for receiving payments)</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="e.g., yourname@okbank" {...field} disabled={isSubmitting} />
+                                            </FormControl>
+                                            <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                     <DialogFooter className="pt-4">
                                         <DialogClose asChild>
-                                             <Button type="button" variant="outline" disabled={isSubmitting}>Cancel</Button>
+                                             <Button type="button" variant="outline" disabled={isSubmitting} onClick={() => onDialogClose(false)}>Cancel</Button>
                                         </DialogClose>
                                          <Button type="submit" disabled={isSubmitting}>
                                             {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -248,6 +272,7 @@ export default function ProductManagement() {
                             <TableHead>Description</TableHead>
                             <TableHead>Price</TableHead>
                             <TableHead>Quantity</TableHead>
+                            <TableHead>UPI ID</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -260,7 +285,7 @@ export default function ProductManagement() {
                              </>
                          ) : !isLoading && products.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">
+                                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
                                     No products found. Click "Add Product" to get started.
                                 </TableCell>
                             </TableRow>
@@ -268,9 +293,10 @@ export default function ProductManagement() {
                             products.map((product) => (
                                 <TableRow key={product.id}>
                                     <TableCell className="font-medium">{product.name}</TableCell>
-                                    <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{product.description}</TableCell>
-                                    <TableCell>${product.price.toFixed(2)}</TableCell>
+                                    <TableCell className="text-sm text-muted-foreground max-w-xs truncate" title={product.description}>{product.description}</TableCell>
+                                    <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                     <TableCell>{product.availableQuantity}</TableCell>
+                                    <TableCell className="text-sm text-muted-foreground max-w-[150px] truncate" title={product.supplierUpiId}>{product.supplierUpiId}</TableCell>
                                     <TableCell className="text-right space-x-1">
                                         <Button variant="ghost" size="icon" onClick={() => openEditForm(product)} aria-label="Edit product">
                                             <Edit className="h-4 w-4" />

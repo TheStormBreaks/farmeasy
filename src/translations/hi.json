@@ -3,7 +3,14 @@
   "LoginPage": {
     "mainTitle": "फार्मइजी कनेक्ट",
     "subTitle": "अपने खाते में लॉग इन करें",
-    "languageLabel": "भाषा"
+    "languageLabel": "भाषा",
+    "prototypeSelectRoleLabel": "प्रोटोटाइप: भूमिका चुनें",
+    "prototypeSelectRolePlaceholder": "लॉग इन करने के लिए भूमिका चुनें...",
+    "roleFarmer": "किसान",
+    "roleKVKOfficial": "केवीके अधिकारी",
+    "roleSupplier": "आपूर्तिकर्ता",
+    "prototypeDescription": "यह प्रोटोटाइप प्रदर्शन के लिए एक अस्थायी त्वरित लॉगिन है।",
+    "loginAsButtonPrefix": "के रूप में लॉग इन करें "
   },
   "LoginForm": {
     "title": "लॉग इन करें",
@@ -126,5 +133,11 @@
     "availablePdfBulletinsCardDescription": "बाहरी बुलेटिन खोलने के लिए क्लिक करें। शीर्ष {count} बुलेटिन दिखाए जा रहे हैं।",
     "openButtonText": "खोलें",
     "inNewTabText": "नए टैब में"
+  },
+  "ExistingAnnouncements": {
+    "noAnnouncementsTitle": "कोई घोषणा नहीं",
+    "noAnnouncementsDescription": "वर्तमान में कोई सामान्य घोषणा पोस्ट नहीं की गई है।",
+    "kvkPrompt": "नई घोषणा पोस्ट करने के लिए उपरोक्त फॉर्म का उपयोग करें।",
+    "farmerPrompt": "केवीके से अपडेट के लिए बाद में देखें।"
   }
 }

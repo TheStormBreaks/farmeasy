@@ -3,7 +3,14 @@
   "LoginPage": {
     "mainTitle": "FarmEasy Connect",
     "subTitle": "Login to your account",
-    "languageLabel": "Language"
+    "languageLabel": "Language",
+    "prototypeSelectRoleLabel": "Prototype: Select Role",
+    "prototypeSelectRolePlaceholder": "Select role to login...",
+    "roleFarmer": "Farmer",
+    "roleKVKOfficial": "KVK Official",
+    "roleSupplier": "Supplier",
+    "prototypeDescription": "This is a temporary quick login for prototype demonstration.",
+    "loginAsButtonPrefix": "Login as "
   },
   "LoginForm": {
     "title": "Login",
@@ -126,5 +133,11 @@
     "availablePdfBulletinsCardDescription": "Click to open an external bulletin. Showing top {count} bulletins found.",
     "openButtonText": "Open",
     "inNewTabText": "in new tab"
+  },
+  "ExistingAnnouncements": {
+    "noAnnouncementsTitle": "No Announcements",
+    "noAnnouncementsDescription": "There are currently no general announcements posted.",
+    "kvkPrompt": "Use the form above to post a new announcement.",
+    "farmerPrompt": "Check back later for updates from KVK."
   }
 }

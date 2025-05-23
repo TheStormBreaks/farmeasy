@@ -1,3 +1,4 @@
+
 // src/components/ProductList.tsx
 'use client';
 
@@ -179,7 +180,7 @@ export default function ProductList() {
                     <Card key={product.id} className="shadow-md flex flex-col justify-between">
                         <CardHeader>
                             <CardTitle>{product.name}</CardTitle>
-                            <CardDescription>${product.price.toFixed(2)} per unit</CardDescription>
+                            <CardDescription>₹{product.price.toFixed(2)} per unit</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-muted-foreground mb-2">{product.description}</p>

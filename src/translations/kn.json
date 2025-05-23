@@ -3,7 +3,14 @@
   "LoginPage": {
     "mainTitle": "ಫಾರ್ಮ್‌ಈಸಿ ಕನೆಕ್ಟ್",
     "subTitle": "ನಿಮ್ಮ ಖಾತೆಗೆ ಲಾಗಿನ್ ಮಾಡಿ",
-    "languageLabel": "ಭಾಷೆ"
+    "languageLabel": "ಭಾಷೆ",
+    "prototypeSelectRoleLabel": "ಮಾದರಿ: ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "prototypeSelectRolePlaceholder": "ಲಾಗಿನ್ ಮಾಡಲು ಪಾತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ...",
+    "roleFarmer": "ರೈತ",
+    "roleKVKOfficial": "ಕೆವಿಕೆ ಅಧಿಕಾರಿ",
+    "roleSupplier": "ಪೂರೈಕೆದಾರ",
+    "prototypeDescription": "ಇದು ಮಾದರಿ ಪ್ರದರ್ಶನಕ್ಕಾಗಿ ತಾತ್ಕಾಲಿಕ ತ್ವರಿತ ಲಾಗಿನ್ ಆಗಿದೆ.",
+    "loginAsButtonPrefix": "ಆಗಿ ಲಾಗಿನ್ ಮಾಡಿ "
   },
   "LoginForm": {
     "title": "ಲಾಗಿನ್ ಮಾಡಿ",
@@ -126,5 +133,11 @@
     "availablePdfBulletinsCardDescription": "ಬಾಹ್ಯ ಬುಲೆಟಿನ್ ತೆರೆಯಲು ಕ್ಲಿಕ್ ಮಾಡಿ. ಪ್ರಮುಖ {count} ಬುಲೆಟಿನ್‌ಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ.",
     "openButtonText": "ತೆರೆಯಿರಿ",
     "inNewTabText": "ಹೊಸ ಟ್ಯಾಬ್‌ನಲ್ಲಿ"
+  },
+  "ExistingAnnouncements": {
+    "noAnnouncementsTitle": "ಯಾವುದೇ ಪ್ರಕಟಣೆಗಳಿಲ್ಲ",
+    "noAnnouncementsDescription": "ಪ್ರಸ್ತುತ ಯಾವುದೇ ಸಾಮಾನ್ಯ ಪ್ರಕಟಣೆಗಳನ್ನು ಪೋಸ್ಟ್ ಮಾಡಲಾಗಿಲ್ಲ.",
+    "kvkPrompt": "ಹೊಸ ಪ್ರಕಟಣೆಯನ್ನು ಪೋಸ್ಟ್ ಮಾಡಲು ಮೇಲಿನ ಫಾರ್ಮ್ ಬಳಸಿ.",
+    "farmerPrompt": "ಕೆವಿಕೆಯಿಂದ ನವೀಕರಣಗಳಿಗಾಗಿ ನಂತರ ಪರಿಶೀಲಿಸಿ."
   }
 }
