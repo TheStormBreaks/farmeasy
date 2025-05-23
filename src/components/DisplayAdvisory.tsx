@@ -28,10 +28,8 @@ export default function DisplayAdvisory() {
     const [errorKvk, setErrorKvk] = useState<Error | null>(null);
 
     const [weatherPdfs, setWeatherPdfs] = useState<PdfInfo[]>([]);
-    const [selectedPdfUrl, setSelectedPdfUrl] = useState<string | null>(null);
     const [isLoadingPdfs, setIsLoadingPdfs] = useState(true);
     const [errorPdfs, setErrorPdfs] = useState<Error | null>(null);
-    const [isEmbeddingPdf, setIsEmbeddingPdf] = useState(false);
 
     useEffect(() => {
         setIsLoadingKvk(true);
@@ -77,22 +75,6 @@ export default function DisplayAdvisory() {
         }
         loadPdfs();
     }, []);
-
-    const handleSelectPdf = (url: string) => {
-        setIsEmbeddingPdf(true);
-        setSelectedPdfUrl(url);
-        // The iframe will start loading. We set isEmbeddingPdf to false on iframe load or error.
-    };
-
-    const handleIframeLoad = () => {
-        setIsEmbeddingPdf(false);
-    };
-    
-    const handleIframeError = () => {
-        setIsEmbeddingPdf(false);
-        // Optionally show a toast or message that embedding failed
-        console.warn("Failed to embed PDF, possibly due to X-Frame-Options or CSP.");
-    };
 
 
     if (isLoadingKvk && isLoadingPdfs) {
@@ -177,7 +159,7 @@ export default function DisplayAdvisory() {
                         <Card className="shadow-sm">
                             <CardHeader>
                                 <CardTitle className="text-base">Available PDF Bulletins:</CardTitle>
-                                <CardDescription>Select a bulletin to view or open externally. Showing top {weatherPdfs.slice(0, 3).length} bulletins found.</CardDescription>
+                                <CardDescription>Click to open an external bulletin. Showing top {weatherPdfs.slice(0, 3).length} bulletins found.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 {weatherPdfs.slice(0, 3).map((pdf, index) => (
@@ -187,11 +169,7 @@ export default function DisplayAdvisory() {
                                             <span className="text-sm text-foreground truncate" title={pdf.text}>{pdf.text}</span>
                                         </div>
                                         <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0">
-                                            <Button variant="outline" size="sm" onClick={() => handleSelectPdf(pdf.url)} disabled={isEmbeddingPdf && selectedPdfUrl === pdf.url}>
-                                                {isEmbeddingPdf && selectedPdfUrl === pdf.url ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                                                View Inline
-                                            </Button>
-                                            <Button variant="ghost" size="sm" asChild>
+                                            <Button variant="outline" size="sm" asChild>
                                                 <a href={pdf.url} target="_blank" rel="noopener noreferrer" title={`Open ${pdf.text} in new tab`}>
                                                     <ExternalLink className="h-4 w-4 mr-1" /> Open
                                                 </a>
@@ -201,29 +179,6 @@ export default function DisplayAdvisory() {
                                 ))}
                             </CardContent>
                         </Card>
-
-                        {selectedPdfUrl && (
-                            <Card className="shadow-md">
-                                <CardHeader>
-                                    <CardTitle className="text-base">Viewing: {weatherPdfs.find(p=>p.url === selectedPdfUrl)?.text || 'Selected PDF'}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    {isEmbeddingPdf && <div className="flex items-center justify-center h-40"><Loader2 className="h-8 w-8 animate-spin text-primary" /><p className="ml-2">Loading PDF...</p></div>}
-                                    <iframe
-                                        src={selectedPdfUrl}
-                                        title="Weather PDF Viewer"
-                                        className={`w-full h-[700px] border rounded-md ${isEmbeddingPdf ? 'hidden' : 'block'}`} // Hide while loading custom indicator
-                                        onLoad={handleIframeLoad}
-                                        onError={handleIframeError}
-                                    >
-                                        <p className="p-4 text-center text-muted-foreground">
-                                            Your browser does not support iframes or the PDF could not be embedded.
-                                            You can <a href={selectedPdfUrl} target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primary/80">download it here</a>.
-                                        </p>
-                                    </iframe>
-                                </CardContent>
-                            </Card>
-                        )}
                     </div>
                 )}
             </div>
