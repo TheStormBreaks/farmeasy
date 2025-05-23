@@ -1,3 +1,4 @@
+
 // src/hooks/useQueries.ts
 'use client';
 
@@ -13,19 +14,19 @@ import {
     doc,
     where,
     serverTimestamp,
-    QueryConstraint // Import QueryConstraint type
+    QueryConstraint, 
+    limit // Import limit
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Query } from '@/types';
 
 const QUERIES_COLLECTION = 'queries';
 
-export function useQueries(farmerId?: string) { // Optional farmerId to filter for farmer view
+export function useQueries(farmerId?: string) { 
     const [queries, setQueries] = useState<Query[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
-    // Fetch queries using onSnapshot
     useEffect(() => {
         setIsLoading(true);
         setError(null);
@@ -33,13 +34,13 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
         const queryConstraints: QueryConstraint[] = [];
 
         if (farmerId) {
-            // Constraints for Farmer view: Filter by farmerId, sort by timestamp descending
             queryConstraints.push(where('farmerId', '==', farmerId));
-            queryConstraints.push(orderBy('timestamp', 'desc')); // Show newest asked first
+            queryConstraints.push(orderBy('timestamp', 'desc'));
+            queryConstraints.push(limit(25)); // Limit farmer's own queries
         } else {
-            // Constraints for KVK view: Sort by status ('new' first), then by timestamp descending
-            queryConstraints.push(orderBy('status', 'asc')); // 'answered' after 'new'
-            queryConstraints.push(orderBy('timestamp', 'desc')); // Show newest within status groups first
+            queryConstraints.push(orderBy('status', 'asc')); 
+            queryConstraints.push(orderBy('timestamp', 'desc')); 
+            queryConstraints.push(limit(50)); // Limit KVK's view of all queries
         }
 
         const q = query(collection(db, QUERIES_COLLECTION), ...queryConstraints);
@@ -51,12 +52,12 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
                 const data = doc.data();
                 const timestampMillis = data.timestamp instanceof Timestamp
                     ? data.timestamp.toMillis()
-                    : typeof data.timestamp === 'number' // Handle potential number timestamps
+                    : typeof data.timestamp === 'number' 
                     ? data.timestamp
-                    : Date.now(); // Fallback
+                    : Date.now(); 
                  const answeredAtMillis = data.answeredAt instanceof Timestamp
                     ? data.answeredAt.toMillis()
-                    : typeof data.answeredAt === 'number' // Handle potential number timestamps
+                    : typeof data.answeredAt === 'number' 
                     ? data.answeredAt
                     : undefined;
 
@@ -65,8 +66,8 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
                     farmerId: data.farmerId,
                     questionText: data.questionText,
                     timestamp: timestampMillis,
-                    status: data.status || 'new', // Default to 'new' if status is missing
-                    answerText: data.answerText || undefined, // Ensure it's string or undefined
+                    status: data.status || 'new', 
+                    answerText: data.answerText || undefined, 
                     answeredAt: answeredAtMillis,
                 });
             });
@@ -78,34 +79,27 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
             setIsLoading(false);
         });
 
-        // Cleanup listener on unmount
         return () => unsubscribe();
-    }, [farmerId]); // Re-run effect if farmerId changes
+    }, [farmerId]); 
 
-    // Function for Farmer to add a new query
     const addQuery = useCallback(async (fId: string, questionText: string): Promise<void> => {
         if (!fId) throw new Error('Farmer ID is required.');
-        // No need to set global loading state here, let form handle its own state
         try {
             await addDoc(collection(db, QUERIES_COLLECTION), {
                 farmerId: fId,
                 questionText: questionText,
                 timestamp: serverTimestamp(),
-                status: 'new', // Initial status
+                status: 'new', 
                 answerText: null,
                 answeredAt: null,
             });
-            // onSnapshot handles state update
         } catch (err: any) {
             console.error("Failed to add query:", err);
-            // Let the calling component handle the error (e.g., show toast)
             throw err;
         }
     }, []);
 
-    // Function for KVK to answer a query
     const answerQuery = useCallback(async (queryId: string, answerText: string): Promise<void> => {
-        // No need to set global loading state here, let answering component handle state
         try {
             const docRef = doc(db, QUERIES_COLLECTION, queryId);
             await updateDoc(docRef, {
@@ -113,17 +107,15 @@ export function useQueries(farmerId?: string) { // Optional farmerId to filter f
                 status: 'answered',
                 answeredAt: serverTimestamp(),
             });
-            // onSnapshot handles state update
         } catch (err: any) {
             console.error("Failed to answer query:", err);
-            // Let the calling component handle the error
             throw err;
         }
     }, []);
 
 
     return {
-        queries, // Sorted based on view (farmer or KVK)
+        queries, 
         isLoading,
         error,
         addQuery,

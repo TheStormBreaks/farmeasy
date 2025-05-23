@@ -15,31 +15,40 @@ import {
     doc,
     where,
     serverTimestamp,
-    getDocs, // Import getDocs for querying registrations
-    writeBatch, // Import writeBatch for deleting registrations
-    QueryConstraint
+    getDocs, 
+    writeBatch, 
+    QueryConstraint,
+    limit // Import limit
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { TrainingProgram } from '@/types';
 
 const PROGRAMS_COLLECTION = 'trainingPrograms';
-const REGISTRATIONS_COLLECTION = 'registrations'; // For deleting registrations when program is deleted
+const REGISTRATIONS_COLLECTION = 'registrations'; 
 
-export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filtering
+export function useTrainingPrograms(kvkId?: string) { 
     const [programs, setPrograms] = useState<TrainingProgram[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<Error | null>(null);
 
-    // Fetch programs using onSnapshot
     useEffect(() => {
         setIsLoading(true);
         setError(null);
 
-        const queryConstraints: QueryConstraint[] = [orderBy('createdAt', 'desc')];
-
-        // Apply filter if kvkId is provided (for KVK view)
+        const queryConstraints: QueryConstraint[] = [];
+        
         if (kvkId) {
+            // KVK view: fetch programs for this KVK, newest first
             queryConstraints.push(where('kvkId', '==', kvkId));
+            queryConstraints.push(orderBy('createdAt', 'desc'));
+            queryConstraints.push(limit(25)); // Limit KVK's own programs list
+        } else {
+            // Farmer view: fetch all programs, ordered by date (upcoming first), then by creation.
+            // Ideally, filter for date >= now on the server.
+            // For now, just order by date and limit the overall fetch.
+            queryConstraints.push(orderBy('date', 'asc')); // Show upcoming programs first
+            // queryConstraints.push(orderBy('createdAt', 'desc')); // Secondary sort if dates are same
+            queryConstraints.push(limit(50)); // Limit for farmer view
         }
 
          const q = query(collection(db, PROGRAMS_COLLECTION), ...queryConstraints);
@@ -51,13 +60,13 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
                 const data = doc.data();
                 const createdAtMillis = data.createdAt instanceof Timestamp
                     ? data.createdAt.toMillis()
-                    : typeof data.createdAt === 'number' ? data.createdAt : Date.now(); // Fallback if already number
+                    : typeof data.createdAt === 'number' ? data.createdAt : Date.now(); 
                 const dateMillis = data.date instanceof Timestamp
                     ? data.date.toMillis()
-                    : typeof data.date === 'number' ? data.date : Date.now(); // Handle number type
+                    : typeof data.date === 'number' ? data.date : Date.now(); 
                  const deadlineMillis = data.registrationDeadline instanceof Timestamp
                     ? data.registrationDeadline.toMillis()
-                    : typeof data.registrationDeadline === 'number' ? data.registrationDeadline : undefined; // Handle number type
+                    : typeof data.registrationDeadline === 'number' ? data.registrationDeadline : undefined; 
 
                 fetchedPrograms.push({
                     id: doc.id,
@@ -78,14 +87,11 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
             setIsLoading(false);
         });
 
-        // Cleanup listener on unmount
         return () => unsubscribe();
-    }, [kvkId]); // Re-run if kvkId changes
+    }, [kvkId]); 
 
-    // Function to add a new program
     const addProgram = useCallback(async (programData: Omit<TrainingProgram, 'id' | 'createdAt'>): Promise<string> => {
         if (!programData.kvkId) throw new Error('KVK ID is required.');
-        // Consider local loading state in component instead of global setIsLoading(true);
         try {
             const docRef = await addDoc(collection(db, PROGRAMS_COLLECTION), {
                 ...programData,
@@ -94,54 +100,44 @@ export function useTrainingPrograms(kvkId?: string) { // Optional kvkId for filt
             return docRef.id;
         } catch (err: any) {
             console.error("Failed to add training program:", err);
-            // setError(err instanceof Error ? err : new Error('Failed to add program')); // Let component handle errors
             throw err;
-        } // finally { setIsLoading(false); }
+        } 
     }, []);
 
-    // Function to update an existing program
     const updateProgram = useCallback(async (id: string, updates: Partial<Omit<TrainingProgram, 'id' | 'createdAt' | 'kvkId'>>): Promise<void> => {
-        // Consider local loading state in component
         try {
             const docRef = doc(db, PROGRAMS_COLLECTION, id);
             await updateDoc(docRef, {
                 ...updates,
-                // Note: We don't update createdAt, kvkId
             });
         } catch (err: any) {
             console.error("Failed to update training program:", err);
-           // setError(err instanceof Error ? err : new Error('Failed to update program')); // Let component handle errors
             throw err;
-        } // finally { setIsLoading(false); }
+        } 
     }, []);
 
-     // Function to delete a program and its registrations
     const deleteProgram = useCallback(async (id: string): Promise<void> => {
-        // Consider local loading state in component
         try {
-            // 1. Delete associated registrations first
             const regQuery = query(collection(db, REGISTRATIONS_COLLECTION), where('programId', '==', id));
             const regSnapshot = await getDocs(regQuery);
-            const batch = writeBatch(db); // Use Firestore batch for atomic delete
+            const batch = writeBatch(db); 
              regSnapshot.forEach(regDoc => {
                  batch.delete(regDoc.ref);
              });
-             await batch.commit(); // Commit registration deletions
+             await batch.commit(); 
 
-            // 2. Delete the program itself
             const docRef = doc(db, PROGRAMS_COLLECTION, id);
             await deleteDoc(docRef);
 
         } catch (err: any) {
             console.error("Failed to delete training program or registrations:", err);
-            // Let component handle error display
             throw err;
         }
     }, []);
 
 
     return {
-        programs, // Contains programs (filtered if kvkId provided)
+        programs, 
         isLoading,
         error,
         addProgram,
