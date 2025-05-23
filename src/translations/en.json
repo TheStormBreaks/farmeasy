@@ -37,6 +37,7 @@
     "title": "Dashboard | Farmer Portal",
     "description": "View announcements and advisories from KVK.",
     "advisoryTitle": "Crop & Weather Advisory",
+    "advisoryDescription": "Important updates regarding crop management and weather conditions. Includes advisories from KVK and external bulletins scraped from official KVK websites.",
     "announcementsTitle": "General Announcements",
     "announcementsDescription": "Latest updates and information from KVK."
   },
@@ -117,11 +118,13 @@
     "noKvkAdvisoryDescription": "There is currently no active crop or weather advisory manually posted by KVK.",
     "lastUpdatedPrefix": "Last updated",
     "externalBulletinsSectionTitle": "External Weather Bulletins",
+    "externalBulletinsDescription": "Links to weather bulletins fetched from official KVK websites.",
     "errorLoadingBulletinsTitle": "Error Loading Bulletins",
-    "noBulletinsFoundTitle": "No Bulletins Found",
-    "noBulletinsFoundDescription": "Could not automatically fetch weather bulletins from the external source.",
-    "availablePdfBulletinsCardTitle": "Available PDF Bulletins:",
-    "availablePdfBulletinsCardDescription": "Click to open an external bulletin. Showing top bulletins found.",
-    "openButtonText": "Open"
+    "noBulletinsFoundTitle": "No External Bulletins Found",
+    "noBulletinsFoundDescription": "Could not automatically fetch weather bulletins from external sources.",
+    "availablePdfBulletinsCardTitle": "Available PDF Bulletins",
+    "availablePdfBulletinsCardDescription": "Click to open an external bulletin. Showing top {count} bulletins found.",
+    "openButtonText": "Open",
+    "inNewTabText": "in new tab"
   }
 }

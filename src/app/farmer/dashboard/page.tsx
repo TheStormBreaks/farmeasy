@@ -21,7 +21,7 @@ export default function FarmerDashboardPage() {
             <h1 className="text-3xl font-bold text-foreground">{t('FarmerDashboardPage.advisoryTitle')}</h1> 
           </div>
            <p className="mb-6 text-muted-foreground">
-            Important updates regarding crop management and weather conditions. Includes advisories from KVK and external bulletins scraped from official KVK websites.
+            {t('FarmerDashboardPage.advisoryDescription')}
            </p>
           <DisplayAdvisory />
       </div>
