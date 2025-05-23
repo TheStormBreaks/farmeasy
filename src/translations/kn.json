@@ -108,5 +108,20 @@
     "errorTitle": "ದೋಷ",
     "errorDescriptionGeneral": "ಸಲಹೆಯನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
     "errorDescriptionLoad": "ಪ್ರಸ್ತುತ ಸಲಹೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ."
+  },
+  "DisplayAdvisory": {
+    "kvkAdvisorySectionTitle": "ಕೆವಿಕೆ ಸಲಹೆ",
+    "kvkAdvisoryErrorTitle": "ದೋಷ",
+    "kvkAdvisoryErrorDescription": "ಕೆವಿಕೆ ಸಲಹೆಯನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    "noKvkAdvisoryTitle": "ಯಾವುದೇ ಸಕ್ರಿಯ ಕೆವಿಕೆ ಸಲಹೆ ಇಲ್ಲ",
+    "noKvkAdvisoryDescription": "ಪ್ರಸ್ತುತ ಕೆವಿಕೆ ಯಿಂದ ಕೈಯಿಂದ ಪೋಸ್ಟ್ ಮಾಡಿದ ಯಾವುದೇ ಸಕ್ರಿಯ ಬೆಳೆ ಅಥವಾ ಹವಾಮಾನ ಸಲಹೆ ಇಲ್ಲ.",
+    "lastUpdatedPrefix": "ಕೊನೆಯದಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
+    "externalBulletinsSectionTitle": "ಬಾಹ್ಯ ಹವಾಮಾನ ಬುಲೆಟಿನ್‌ಗಳು",
+    "errorLoadingBulletinsTitle": "ಬುಲೆಟಿನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ",
+    "noBulletinsFoundTitle": "ಯಾವುದೇ ಬುಲೆಟಿನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+    "noBulletinsFoundDescription": "ಬಾಹ್ಯ ಮೂಲದಿಂದ ಹವಾಮಾನ ಬುಲೆಟಿನ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ತರಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
+    "availablePdfBulletinsCardTitle": "ಲಭ್ಯವಿರುವ ಪಿಡಿಎಫ್ ಬುಲೆಟಿನ್‌ಗಳು:",
+    "availablePdfBulletinsCardDescription": "ಬಾಹ್ಯ ಬುಲೆಟಿನ್ ತೆರೆಯಲು ಕ್ಲಿಕ್ ಮಾಡಿ. ಕಂಡುಬಂದಿರುವ ಪ್ರಮುಖ ಬುಲೆಟಿನ್‌ಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ.",
+    "openButtonText": "ತೆರೆಯಿರಿ"
   }
 }

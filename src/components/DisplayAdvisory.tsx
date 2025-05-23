@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 import { fetchLatestWeatherPdfUrls } from '@/app/actions/fetch-weather-pdfs';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/context/LanguageContext'; // Import useLanguage
 
 const ADVISORY_DOC_ID = 'current_advisory';
 const ADVISORY_COLLECTION = 'advisories';
@@ -23,6 +24,7 @@ interface PdfInfo {
 }
 
 export default function DisplayAdvisory() {
+    const { t } = useLanguage(); // Use language context
     const [kvkAdvisory, setKvkAdvisory] = useState<{ text: string; lastUpdated: number | null } | null>(null);
     const [isLoadingKvk, setIsLoadingKvk] = useState(true);
     const [errorKvk, setErrorKvk] = useState<Error | null>(null);
@@ -101,21 +103,21 @@ export default function DisplayAdvisory() {
             {/* KVK Manually Entered Advisory */}
             <div>
                 <h2 className="text-xl font-semibold mb-3 flex items-center text-primary">
-                    <AlertTriangle className="h-5 w-5 mr-2 text-destructive" /> KVK Advisory
+                    <AlertTriangle className="h-5 w-5 mr-2 text-destructive" /> {t('DisplayAdvisory.kvkAdvisorySectionTitle')}
                 </h2>
                 {isLoadingKvk &&  <Skeleton className="h-20 w-full rounded-md" />}
                 {!isLoadingKvk && errorKvk && (
                     <Alert variant="destructive">
                         <AlertTriangle className="h-4 w-4" />
-                        <AlertTitle>Error</AlertTitle>
-                        <AlertDescription>Could not load the KVK advisory. Please try again later.</AlertDescription>
+                        <AlertTitle>{t('DisplayAdvisory.kvkAdvisoryErrorTitle')}</AlertTitle>
+                        <AlertDescription>{t('DisplayAdvisory.kvkAdvisoryErrorDescription')}</AlertDescription>
                     </Alert>
                 )}
                 {!isLoadingKvk && !errorKvk && (!kvkAdvisory || !kvkAdvisory.text) && (
                     <Alert variant="default" className='border-primary bg-primary/5'>
                         <Info className="h-4 w-4 text-primary" />
-                        <AlertTitle className='text-primary'>No Active KVK Advisory</AlertTitle>
-                        <AlertDescription>There is currently no active crop or weather advisory manually posted by KVK.</AlertDescription>
+                        <AlertTitle className='text-primary'>{t('DisplayAdvisory.noKvkAdvisoryTitle')}</AlertTitle>
+                        <AlertDescription>{t('DisplayAdvisory.noKvkAdvisoryDescription')}</AlertDescription>
                     </Alert>
                 )}
                 {!isLoadingKvk && !errorKvk && kvkAdvisory && kvkAdvisory.text && (
@@ -124,7 +126,7 @@ export default function DisplayAdvisory() {
                             <p className="text-foreground whitespace-pre-wrap">{kvkAdvisory.text}</p>
                             {kvkAdvisory.lastUpdated && (
                                 <p className="text-xs text-muted-foreground mt-4 pt-3 border-t border-destructive/20">
-                                    Last updated: {format(new Date(kvkAdvisory.lastUpdated), "PPPp")}
+                                    {t('DisplayAdvisory.lastUpdatedPrefix')}: {format(new Date(kvkAdvisory.lastUpdated), "PPPp")}
                                 </p>
                             )}
                         </CardContent>
@@ -137,29 +139,31 @@ export default function DisplayAdvisory() {
             {/* External Weather PDFs Section */}
             <div>
                  <h2 className="text-xl font-semibold mb-3 flex items-center text-primary">
-                    <CloudLightning className="h-5 w-5 mr-2 text-blue-500" /> External Weather Bulletins
+                    <CloudLightning className="h-5 w-5 mr-2 text-blue-500" /> {t('DisplayAdvisory.externalBulletinsSectionTitle')}
                 </h2>
                 {isLoadingPdfs && <Skeleton className="h-40 w-full rounded-md" />}
                 {!isLoadingPdfs && errorPdfs && (
                      <Alert variant="destructive">
                         <AlertTriangle className="h-4 w-4" />
-                        <AlertTitle>Error Loading Bulletins</AlertTitle>
+                        <AlertTitle>{t('DisplayAdvisory.errorLoadingBulletinsTitle')}</AlertTitle>
                         <AlertDescription>{errorPdfs.message}</AlertDescription>
                     </Alert>
                 )}
                 {!isLoadingPdfs && !errorPdfs && weatherPdfs.length === 0 && (
                      <Alert variant="default" className='border-blue-500 bg-blue-500/5'>
                         <Info className="h-4 w-4 text-blue-600" />
-                        <AlertTitle className='text-blue-600'>No Bulletins Found</AlertTitle>
-                        <AlertDescription>Could not automatically fetch weather bulletins from the external source.</AlertDescription>
+                        <AlertTitle className='text-blue-600'>{t('DisplayAdvisory.noBulletinsFoundTitle')}</AlertTitle>
+                        <AlertDescription>{t('DisplayAdvisory.noBulletinsFoundDescription')}</AlertDescription>
                     </Alert>
                 )}
                 {!isLoadingPdfs && !errorPdfs && weatherPdfs.length > 0 && (
                     <div className="space-y-4">
                         <Card className="shadow-sm">
                             <CardHeader>
-                                <CardTitle className="text-base">Available PDF Bulletins:</CardTitle>
-                                <CardDescription>Click to open an external bulletin. Showing top {weatherPdfs.slice(0, 3).length} bulletins found.</CardDescription>
+                                <CardTitle className="text-base">{t('DisplayAdvisory.availablePdfBulletinsCardTitle')}</CardTitle>
+                                <CardDescription>
+                                    {t('DisplayAdvisory.availablePdfBulletinsCardDescription').replace('{count}', weatherPdfs.slice(0, 3).length.toString())}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
                                 {weatherPdfs.slice(0, 3).map((pdf, index) => (
@@ -170,8 +174,8 @@ export default function DisplayAdvisory() {
                                         </div>
                                         <div className="flex items-center space-x-2 flex-shrink-0 mt-2 sm:mt-0">
                                             <Button variant="outline" size="sm" asChild>
-                                                <a href={pdf.url} target="_blank" rel="noopener noreferrer" title={`Open ${pdf.text} in new tab`}>
-                                                    <ExternalLink className="h-4 w-4 mr-1" /> Open
+                                                <a href={pdf.url} target="_blank" rel="noopener noreferrer" title={`${t('DisplayAdvisory.openButtonText')} ${pdf.text} ${t('DisplayAdvisory.inNewTabText') || 'in new tab'}`}>
+                                                    <ExternalLink className="h-4 w-4 mr-1" /> {t('DisplayAdvisory.openButtonText')}
                                                 </a>
                                             </Button>
                                         </div>
@@ -185,3 +189,4 @@ export default function DisplayAdvisory() {
         </div>
     );
 }
+

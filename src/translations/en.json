@@ -108,5 +108,20 @@
     "errorTitle": "Error",
     "errorDescriptionGeneral": "Failed to update advisory. Please try again.",
     "errorDescriptionLoad": "Could not load current advisory."
+  },
+  "DisplayAdvisory": {
+    "kvkAdvisorySectionTitle": "KVK Advisory",
+    "kvkAdvisoryErrorTitle": "Error",
+    "kvkAdvisoryErrorDescription": "Could not load the KVK advisory. Please try again later.",
+    "noKvkAdvisoryTitle": "No Active KVK Advisory",
+    "noKvkAdvisoryDescription": "There is currently no active crop or weather advisory manually posted by KVK.",
+    "lastUpdatedPrefix": "Last updated",
+    "externalBulletinsSectionTitle": "External Weather Bulletins",
+    "errorLoadingBulletinsTitle": "Error Loading Bulletins",
+    "noBulletinsFoundTitle": "No Bulletins Found",
+    "noBulletinsFoundDescription": "Could not automatically fetch weather bulletins from the external source.",
+    "availablePdfBulletinsCardTitle": "Available PDF Bulletins:",
+    "availablePdfBulletinsCardDescription": "Click to open an external bulletin. Showing top bulletins found.",
+    "openButtonText": "Open"
   }
 }

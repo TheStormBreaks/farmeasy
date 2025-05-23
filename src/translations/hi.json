@@ -108,5 +108,20 @@
     "errorTitle": "त्रुटि",
     "errorDescriptionGeneral": "सलाह अपडेट करने में विफल। कृपया पुनः प्रयास करें।",
     "errorDescriptionLoad": "वर्तमान सलाह लोड नहीं हो सकी।"
+  },
+  "DisplayAdvisory": {
+    "kvkAdvisorySectionTitle": "केवीके सलाहकार",
+    "kvkAdvisoryErrorTitle": "त्रुटि",
+    "kvkAdvisoryErrorDescription": "केवीके सलाहकार लोड नहीं किया जा सका। कृपया बाद में पुनः प्रयास करें।",
+    "noKvkAdvisoryTitle": "कोई सक्रिय केवीके सलाहकार नहीं",
+    "noKvkAdvisoryDescription": "वर्तमान में केवीके द्वारा मैन्युअल रूप से पोस्ट किया गया कोई सक्रिय फसल या मौसम सलाहकार नहीं है।",
+    "lastUpdatedPrefix": "अंतिम अपडेट",
+    "externalBulletinsSectionTitle": "बाहरी मौसम बुलेटिन",
+    "errorLoadingBulletinsTitle": "बुलेटिन लोड करने में त्रुटि",
+    "noBulletinsFoundTitle": "कोई बुलेटिन नहीं मिला",
+    "noBulletinsFoundDescription": "बाहरी स्रोत से मौसम बुलेटिन स्वचालित रूप से प्राप्त नहीं किए जा सके।",
+    "availablePdfBulletinsCardTitle": "उपलब्ध पीडीएफ बुलेटिन:",
+    "availablePdfBulletinsCardDescription": "बाहरी बुलेटिन खोलने के लिए क्लिक करें। शीर्ष बुलेटिन दिखाए जा रहे हैं।",
+    "openButtonText": "खोलें"
   }
 }
