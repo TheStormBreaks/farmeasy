@@ -28,6 +28,9 @@ Before you begin, ensure you have the following installed:
     code .
     ```
 
+
+    
+
 3.  **Install Dependencies:**
     Open the integrated terminal in VS Code (View > Terminal) and run:
     ```bash
