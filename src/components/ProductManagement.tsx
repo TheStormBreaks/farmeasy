@@ -1,3 +1,4 @@
+
 // src/components/ProductManagement.tsx
 'use client';
 
@@ -269,7 +270,7 @@ export default function ProductManagement() {
                                 <TableRow key={product.id}>
                                     <TableCell className="font-medium">{product.name}</TableCell>
                                     <TableCell className="text-sm text-muted-foreground max-w-xs truncate">{product.description}</TableCell>
-                                    <TableCell>${product.price.toFixed(2)}</TableCell>
+                                    <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                     <TableCell>{product.availableQuantity}</TableCell>
                                     <TableCell className="text-right space-x-1">
                                         <Button variant="ghost" size="icon" onClick={() => openEditForm(product)} aria-label="Edit product">

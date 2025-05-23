@@ -1,3 +1,4 @@
+
 // src/components/ShoppingCartDisplay.tsx
 'use client';
 
@@ -231,8 +232,8 @@ export default function ShoppingCartDisplay() {
                                             </Button>
                                          </div>
                                     </TableCell>
-                                    <TableCell className="text-right">${price.toFixed(2)}</TableCell>
-                                    <TableCell className="text-right">${subtotal.toFixed(2)}</TableCell>
+                                    <TableCell className="text-right">₹{price.toFixed(2)}</TableCell>
+                                    <TableCell className="text-right">₹{subtotal.toFixed(2)}</TableCell>
                                     <TableCell className="text-right">
                                         <Button
                                             variant="ghost"
@@ -252,7 +253,7 @@ export default function ShoppingCartDisplay() {
                      <TableFooter>
                         <TableRow>
                              <TableCell colSpan={3} className="text-right font-bold text-lg">Total:</TableCell>
-                             <TableCell className="text-right font-bold text-lg">${calculateTotal().toFixed(2)}</TableCell>
+                             <TableCell className="text-right font-bold text-lg">₹{calculateTotal().toFixed(2)}</TableCell>
                              <TableCell>
                                  <Button
                                      variant="outline"
