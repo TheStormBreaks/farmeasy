@@ -12,7 +12,8 @@ import {
     onSnapshot,
     Timestamp,
     doc,
-    serverTimestamp
+    serverTimestamp,
+    limit // Import limit
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import type { Announcement } from '@/types';
@@ -36,8 +37,13 @@ export function useAnnouncements() {
         setIsLoading(true);
         setError(null);
         
-        const q = query(collection(db, ANNOUNCEMENTS_COLLECTION), orderBy('timestamp', 'desc'));
-        console.log("useAnnouncements: Query created for announcements collection.");
+        // Fetch the 25 most recent announcements
+        const q = query(
+            collection(db, ANNOUNCEMENTS_COLLECTION), 
+            orderBy('timestamp', 'desc'),
+            limit(25) // Added limit
+        );
+        console.log("useAnnouncements: Query created for announcements collection with limit.");
 
         const unsubscribe = onSnapshot(q, (querySnapshot) => {
             console.log("useAnnouncements: onSnapshot triggered. Processing query snapshot...");
@@ -66,7 +72,11 @@ export function useAnnouncements() {
             if ((err as any).code === 'permission-denied') {
                 console.error("useAnnouncements: Firestore permission denied. Check your security rules.");
                 setError(new Error('Permission denied. Please check Firestore security rules.'));
-            } else {
+            } else if ((err as any).code === 'unimplemented' && (err.message?.includes(' inequality') || err.message?.includes('orderBy'))) {
+                console.error("useAnnouncements: Firestore query requires an index. Please create the composite index suggested in the error message in your Firebase console.", err);
+                setError(new Error('Firestore query requires an index. Check console for details.'));
+            }
+            else {
                 setError(err instanceof Error ? err : new Error('Failed to fetch announcements.'));
             }
             setIsLoading(false);
@@ -115,7 +125,10 @@ export function useAnnouncements() {
     }, []);
 
     const refreshAnnouncements = useCallback(() => {
+        // This function is less relevant with onSnapshot, but can be kept if needed for manual refresh logic elsewhere
         console.log("useAnnouncements: refreshAnnouncements called. Real-time updates are active via onSnapshot.");
+        // Potentially, you could re-trigger the query here if not using onSnapshot,
+        // but with onSnapshot, this manual refresh is generally not needed.
     }, []);
 
     return {
