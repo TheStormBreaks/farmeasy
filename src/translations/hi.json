@@ -133,5 +133,11 @@
     "availablePdfBulletinsCardDescription": "बाहरी बुलेटिन खोलने के लिए क्लिक करें। शीर्ष {count} बुलेटिन दिखाए जा रहे हैं।",
     "openButtonText": "खोलें",
     "inNewTabText": "नए टैब में"
+  },
+  "ExistingAnnouncements": {
+    "noAnnouncementsTitle": "कोई घोषणा नहीं",
+    "noAnnouncementsDescription": "वर्तमान में कोई सामान्य घोषणा पोस्ट नहीं की गई है।",
+    "kvkPrompt": "नई घोषणा पोस्ट करने के लिए उपरोक्त फॉर्म का उपयोग करें।",
+    "farmerPrompt": "केवीके से अपडेट के लिए बाद में देखें।"
   }
 }

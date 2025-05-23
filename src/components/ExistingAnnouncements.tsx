@@ -25,6 +25,7 @@ import { AlertCircle, Loader2, Trash2 } from 'lucide-react'; // Import icons
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/context/LanguageContext'; // Import useLanguage
 
 
 export default function ExistingAnnouncements() {
@@ -32,6 +33,7 @@ export default function ExistingAnnouncements() {
     const { announcements, isLoading, error, deleteAnnouncement } = useAnnouncements();
     const [isDeleting, setIsDeleting] = useState<string | null>(null); // Track which announcement is being deleted
     const { toast } = useToast();
+    const { t } = useLanguage(); // Use language context
 
     const handleDelete = async (id: string) => {
         setIsDeleting(id);
@@ -84,15 +86,15 @@ export default function ExistingAnnouncements() {
         return (
             <Card className="shadow-md">
                  <CardHeader>
-                    <CardTitle>No Announcements</CardTitle>
-                    <CardDescription>There are currently no general announcements posted.</CardDescription>
+                    <CardTitle>{t('ExistingAnnouncements.noAnnouncementsTitle')}</CardTitle>
+                    <CardDescription>{t('ExistingAnnouncements.noAnnouncementsDescription')}</CardDescription>
                  </CardHeader>
                  <CardContent>
                     {userType === 'KVK' && (
-                         <p className="text-sm text-muted-foreground">Use the form above to post a new announcement.</p>
+                         <p className="text-sm text-muted-foreground">{t('ExistingAnnouncements.kvkPrompt')}</p>
                     )}
                      {userType === 'FARMER' && (
-                         <p className="text-sm text-muted-foreground">Check back later for updates from KVK.</p>
+                         <p className="text-sm text-muted-foreground">{t('ExistingAnnouncements.farmerPrompt')}</p>
                     )}
                  </CardContent>
             </Card>

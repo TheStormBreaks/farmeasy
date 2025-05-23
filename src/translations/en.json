@@ -133,5 +133,11 @@
     "availablePdfBulletinsCardDescription": "Click to open an external bulletin. Showing top {count} bulletins found.",
     "openButtonText": "Open",
     "inNewTabText": "in new tab"
+  },
+  "ExistingAnnouncements": {
+    "noAnnouncementsTitle": "No Announcements",
+    "noAnnouncementsDescription": "There are currently no general announcements posted.",
+    "kvkPrompt": "Use the form above to post a new announcement.",
+    "farmerPrompt": "Check back later for updates from KVK."
   }
 }
