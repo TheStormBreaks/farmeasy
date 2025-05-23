@@ -16,6 +16,7 @@ export interface Product {
     price: number; // Store price as a number
     availableQuantity: number;
     supplierId: string; // Could be 'SUPPLY' for now, or a specific user ID if multiple suppliers
+    supplierUpiId: string; // UPI ID of the supplier for this product
     createdAt: number; // Timestamp
     updatedAt: number; // Timestamp
 }
