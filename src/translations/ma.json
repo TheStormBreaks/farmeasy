@@ -3,7 +3,14 @@
   "LoginPage": {
     "mainTitle": "फार्मइजी कनेक्ट",
     "subTitle": "अपन खातामे लॉग इन करू",
-    "languageLabel": "भाषा"
+    "languageLabel": "भाषा",
+    "prototypeSelectRoleLabel": "प्रोटोटाइप: भूमिका चुनू",
+    "prototypeSelectRolePlaceholder": "लॉग इन करबाक लेल भूमिका चुनू...",
+    "roleFarmer": "कृषक",
+    "roleKVKOfficial": "केवीके अधिकारी",
+    "roleSupplier": "आपूर्तिकर्ता",
+    "prototypeDescription": "ई प्रोटोटाइप प्रदर्शनक लेल एकटा अस्थायी त्वरित लॉग इन अछि।",
+    "loginAsButtonPrefix": "के रूप मे लॉग इन करू "
   },
   "LoginForm": {
     "title": "लॉग इन करू",

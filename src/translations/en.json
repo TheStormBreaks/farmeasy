@@ -3,7 +3,14 @@
   "LoginPage": {
     "mainTitle": "FarmEasy Connect",
     "subTitle": "Login to your account",
-    "languageLabel": "Language"
+    "languageLabel": "Language",
+    "prototypeSelectRoleLabel": "Prototype: Select Role",
+    "prototypeSelectRolePlaceholder": "Select role to login...",
+    "roleFarmer": "Farmer",
+    "roleKVKOfficial": "KVK Official",
+    "roleSupplier": "Supplier",
+    "prototypeDescription": "This is a temporary quick login for prototype demonstration.",
+    "loginAsButtonPrefix": "Login as "
   },
   "LoginForm": {
     "title": "Login",
