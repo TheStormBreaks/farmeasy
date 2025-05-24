@@ -5,11 +5,11 @@ import React, { useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import type { UserType } from '@/types';
-import { Skeleton } from '@/components/ui/skeleton'; // For loading state
+import { Skeleton } from '@/components/ui/skeleton'; 
 
 interface AuthGuardProps {
   children: ReactNode;
-  requiredUserType: UserType | UserType[]; // Allow single or array of types
+  requiredUserType: UserType | UserType[]; 
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({ children, requiredUserType }) => {
@@ -18,51 +18,56 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children, requiredUserType }) => 
   const pathname = usePathname();
 
   const requiredTypes = Array.isArray(requiredUserType) ? requiredUserType : [requiredUserType];
+  const farmeasyLoginPath = '/farmeasy/login';
+  const farmeasyKvkDefaultPath = '/farmeasy/kvk/announcements';
+  const farmeasyFarmerDefaultPath = '/farmeasy/farmer/dashboard';
+  const farmeasySupplyDefaultPath = '/farmeasy/supply/products';
+
 
   useEffect(() => {
+    // Only apply auth guard logic if within the /farmeasy path
+    if (!pathname.startsWith('/farmeasy')) {
+        // If outside /farmeasy, and not loading, no specific guard needed from this component
+        // The page itself or its layout should handle if it needs auth
+        return;
+    }
+
     if (isLoading) {
-      return; // Don't redirect while loading initial state
+      return; 
     }
 
     if (!isAuthenticated) {
-      // If not authenticated, redirect to login
-       if (pathname !== '/login') {
-          router.replace('/login');
+       if (pathname !== farmeasyLoginPath) {
+          router.replace(farmeasyLoginPath);
        }
-       return; // Stop further checks if redirecting to login
+       return; 
     }
 
-    // Check if the current userType is allowed for this route
     const isAuthorized = requiredTypes.some(type => type === userType);
 
     if (!isAuthorized) {
-        // If authenticated but wrong user type, redirect based on actual type
-        let redirectPath = '/login'; // Default fallback
-        if (userType === 'KVK') redirectPath = '/kvk/announcements'; // KVK default remains announcements
-        else if (userType === 'FARMER') redirectPath = '/farmer/dashboard'; // Farmer default remains dashboard
-        else if (userType === 'SUPPLY') redirectPath = '/supply/products';
+        let redirectPath = farmeasyLoginPath; 
+        if (userType === 'KVK') redirectPath = farmeasyKvkDefaultPath;
+        else if (userType === 'FARMER') redirectPath = farmeasyFarmerDefaultPath;
+        else if (userType === 'SUPPLY') redirectPath = farmeasySupplyDefaultPath;
 
-         // Prevent infinite redirect loop if already on the correct page or login
-        if (pathname !== redirectPath && pathname !== '/login') {
+        if (pathname !== redirectPath && pathname !== farmeasyLoginPath) {
            router.replace(redirectPath);
         }
     }
 
+  }, [isAuthenticated, userType, requiredTypes, router, isLoading, pathname, farmeasyLoginPath, farmeasyKvkDefaultPath, farmeasyFarmerDefaultPath, farmeasySupplyDefaultPath]);
 
-  }, [isAuthenticated, userType, requiredTypes, router, isLoading, pathname]);
 
-  const isAuthorized = requiredTypes.some(type => type === userType);
-
-   // Show loading skeleton or null while checking auth/redirecting,
-   // or if user is not authorized for the current route yet.
-  if (isLoading || !isAuthenticated || !isAuthorized) {
-       // Ensure we don't show loading skeleton on the login page itself if user is already logged out
-       if (pathname === '/login' && !isAuthenticated && !isLoading) {
-           return <>{children}</>; // Show login page content if not authenticated and not loading
+  // Only apply skeleton or block rendering if inside /farmeasy path
+  if (pathname.startsWith('/farmeasy')) {
+    const isAuthorized = requiredTypes.some(type => type === userType);
+    if (isLoading || !isAuthenticated || !isAuthorized) {
+       if (pathname === farmeasyLoginPath && !isAuthenticated && !isLoading) {
+           return <>{children}</>; 
        }
 
-       // For protected routes, show skeleton while loading or if unauthorized (before redirect happens)
-       if(pathname !== '/login') {
+       if(pathname !== farmeasyLoginPath) {
            return (
               <div className="flex flex-col space-y-3 p-8 min-h-screen">
                 <Skeleton className="h-[125px] w-full rounded-xl" />
@@ -73,12 +78,10 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children, requiredUserType }) => 
               </div>
             );
        }
-       // Fallback for login page during initial load if needed
        return null;
+    }
   }
-
-
-  // If authenticated and correct user type, render children
+  
   return <>{children}</>;
 };
 

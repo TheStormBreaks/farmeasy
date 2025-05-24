@@ -1,20 +1,16 @@
-
-// src/app/layout.tsx
+// src/app/layout.tsx (New Root Layout for CyberHertz)
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
+import './globals.css'; // Keep global styles
 import { cn } from '@/lib/utils';
-import { Toaster } from '@/components/ui/toaster';
-import AuthProvider from '@/context/AuthContext';
-import Providers from './providers'; // Import the QueryClientProvider component
-import { ThemeProvider } from '@/components/ThemeProvider'; // Import ThemeProvider
-import LanguageProvider from '@/context/LanguageContext'; // Import LanguageProvider
+import CyberHertzNavbar from '@/components/CyberHertzNavbar';
+import { ThemeProvider } from '@/components/ThemeProvider'; // For CyberHertz theme
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'FarmEasy Connect',
-  description: 'Connecting KVK and Farmers',
+  title: 'CyberHertz - Innovative Solutions',
+  description: 'Welcome to CyberHertz',
 };
 
 export default function RootLayout({
@@ -36,15 +32,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Providers>
-            <AuthProvider>
-              <LanguageProvider> {/* Wrap with LanguageProvider */}
-                {children}
-                <Toaster />
-              </LanguageProvider>
-            </AuthProvider>
-          </Providers>
-         </ThemeProvider>
+          <CyberHertzNavbar />
+          <main>{children}</main>
+          {/* Add a global footer for CyberHertz if needed */}
+        </ThemeProvider>
       </body>
     </html>
   );

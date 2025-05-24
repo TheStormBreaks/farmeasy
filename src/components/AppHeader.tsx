@@ -1,17 +1,16 @@
-
 // src/components/AppHeader.tsx
 'use client';
 
 import React from 'react';
-import { useRouter, usePathname } from 'next/navigation'; // Standard Next.js navigation
-import Link from 'next/link'; // Standard Next.js Link
+import { usePathname } from 'next/navigation'; 
+import Link from 'next/link'; 
 import { Button } from '@/components/ui/button';
 import { LogOut, Wheat, ShoppingCart, ShoppingBag, PackagePlus, HelpCircle, MessageSquareWarning, ClipboardList, GraduationCap, Moon, Sun } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import type { UserType } from '@/types';
 import { cn } from '@/lib/utils';
 import { useTheme } from "next-themes";
-import { useLanguage } from '@/context/LanguageContext'; // Import useLanguage
+import { useLanguage } from '@/context/LanguageContext'; 
 
 interface AppHeaderProps {
     userRole: UserType;
@@ -19,10 +18,9 @@ interface AppHeaderProps {
 
 const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
   const { logout } = useAuth();
-  // const router = useRouter(); // Standard router
-  const pathname = usePathname(); // Standard pathname
+  const pathname = usePathname(); 
   const { theme, setTheme } = useTheme();
-  const { t } = useLanguage(); // Use language context
+  const { t } = useLanguage(); 
 
   const handleLogout = () => {
     logout();
@@ -41,6 +39,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const farmeasyPrefix = "/farmeasy";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -54,46 +53,46 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
             {userRole === 'FARMER' && (
                 <>
                     <Link
-                        href="/farmer/dashboard"
+                        href={`${farmeasyPrefix}/farmer/dashboard`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/farmer/dashboard" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/farmer/dashboard` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                         {t('AppHeader.nav.farmer_dashboard')}
                     </Link>
                      <Link
-                        href="/farmer/training"
+                        href={`${farmeasyPrefix}/farmer/training`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/farmer/training" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/farmer/training` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                          <GraduationCap className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.farmer_training')}
                     </Link>
                     <Link
-                        href="/farmer/shop"
+                        href={`${farmeasyPrefix}/farmer/shop`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/farmer/shop" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/farmer/shop` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                         <ShoppingBag className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.farmer_shop')}
                     </Link>
                     <Link
-                        href="/farmer/cart"
+                        href={`${farmeasyPrefix}/farmer/cart`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/farmer/cart" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/farmer/cart` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                          <ShoppingCart className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.farmer_cart')}
                     </Link>
                      <Link
-                        href="/farmer/ask-query"
+                        href={`${farmeasyPrefix}/farmer/ask-query`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/farmer/ask-query" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/farmer/ask-query` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                         <HelpCircle className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.farmer_ask_query')}
@@ -103,28 +102,28 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
              {userRole === 'KVK' && (
                 <>
                     <Link
-                        href="/kvk/announcements"
+                        href={`${farmeasyPrefix}/kvk/announcements`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/kvk/announcements" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/kvk/announcements` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                          <MessageSquareWarning className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.kvk_announcements')}
                     </Link>
                      <Link
-                        href="/kvk/training"
+                        href={`${farmeasyPrefix}/kvk/training`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/kvk/training" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/kvk/training` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                          <GraduationCap className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.kvk_training')}
                     </Link>
                      <Link
-                        href="/kvk/queries"
+                        href={`${farmeasyPrefix}/kvk/queries`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/kvk/queries" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/kvk/queries` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                          <ClipboardList className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.kvk_queries')}
@@ -134,10 +133,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({ userRole }) => {
               {userRole === 'SUPPLY' && (
                  <>
                     <Link
-                        href="/supply/products"
+                        href={`${farmeasyPrefix}/supply/products`}
                         className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
-                            pathname === "/supply/products" ? "text-primary" : "text-muted-foreground"
+                            pathname === `${farmeasyPrefix}/supply/products` ? "text-primary" : "text-muted-foreground"
                         )}
                         >
                          <PackagePlus className="inline-block h-4 w-4 mr-1" /> {t('AppHeader.nav.supply_products')}
