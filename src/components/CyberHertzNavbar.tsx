@@ -3,8 +3,8 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Sun, Moon, Briefcase } from 'lucide-react'; // Added Briefcase for CyberHertz logo
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'; // Added SheetHeader, SheetTitle
+import { Menu, Sun, Moon, Briefcase } from 'lucide-react'; 
 import { useTheme } from "next-themes";
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 const navItems = [
   { label: 'About CH', href: '/' },
   { label: 'Somya Jha', href: '/somya' },
-  { label: 'FarmEasy', href: '/farmeasy' }, // Link to FarmEasy app
+  { label: 'FarmEasy', href: '/farmeasy' }, 
 ];
 
 export default function CyberHertzNavbar() {
@@ -66,12 +66,17 @@ export default function CyberHertzNavbar() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[260px] bg-background">
-              <div className="flex flex-col gap-6 p-6">
-                <Link href="/" className="flex items-center gap-2 mb-4">
-                  <Briefcase className="h-7 w-7 text-primary" />
-                  <span className="text-xl font-bold text-foreground">CyberHertz</span>
-                </Link>
+            <SheetContent side="right" className="w-[260px] bg-background p-6"> {/* Ensure SheetContent has padding */}
+              <SheetHeader className="mb-6 text-left"> {/* Added text-left for title alignment */}
+                <SheetTitle asChild>
+                  <Link href="/" className="flex items-center gap-2">
+                    <Briefcase className="h-7 w-7 text-primary" />
+                    <span className="text-xl font-bold text-foreground">CyberHertz</span>
+                  </Link>
+                </SheetTitle>
+                {/* You could add a <SheetDescription>Mobile Navigation</SheetDescription> here if desired */}
+              </SheetHeader>
+              <div className="flex flex-col gap-4"> {/* Links list */}
                 {navItems.map((item) => (
                   <Link
                     key={item.label}
