@@ -29,6 +29,7 @@
     "logout": "Logout",
     "toggleTheme": "Toggle theme",
     "nav": {
+      "farmer_ai_assistant": "AI Assistant",
       "farmer_dashboard": "Announcements",
       "farmer_training": "Training",
       "farmer_shop": "Shop",

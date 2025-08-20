@@ -11,19 +11,18 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
-  userId: string | null; // Simple user ID, could be 'KVK', 'FARMER', 'SUPPLY'
+  userId: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// In-memory store for user type during session (client-side)
 let sessionUserType: UserType = null;
-let sessionUserId: string | null = null; // Store simple ID
+let sessionUserId: string | null = null;
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [userType, setUserType] = useState<UserType>(sessionUserType);
   const [userId, setUserId] = useState<string | null>(sessionUserId);
-  const [isLoading, setIsLoading] = useState(true); // Still useful for initial load/redirect checks
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -34,49 +33,44 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       setUserId(id);
   }, []);
 
-  // Effect to handle initial authentication state check and redirection logic
   useEffect(() => {
-    // Simulate an async check if needed, otherwise just set loading false
-    // In a real app, this might involve checking a token or session
-    const currentUser = sessionUserType; // Use the in-memory value
+    const currentUser = sessionUserType;
+    const loginPath = '/farmeasy/login';
 
     if (currentUser) {
-      // User is logged in (in this session)
       let expectedPathPrefix = '';
-      if (currentUser === 'KVK') expectedPathPrefix = '/kvk';
-      else if (currentUser === 'FARMER') expectedPathPrefix = '/farmer';
-      else if (currentUser === 'SUPPLY') expectedPathPrefix = '/supply';
+      if (currentUser === 'KVK') expectedPathPrefix = '/farmeasy/kvk';
+      else if (currentUser === 'FARMER') expectedPathPrefix = '/farmeasy/farmer';
+      else if (currentUser === 'SUPPLY') expectedPathPrefix = '/farmeasy/supply';
 
-      let defaultPath = '/login';
-      if (currentUser === 'KVK') defaultPath = '/kvk/announcements';
-      else if (currentUser === 'FARMER') defaultPath = '/farmer/dashboard';
-      else if (currentUser === 'SUPPLY') defaultPath = '/supply/products';
+      let defaultPath = loginPath;
+      if (currentUser === 'KVK') defaultPath = '/farmeasy/kvk/announcements';
+      else if (currentUser === 'FARMER') defaultPath = '/farmeasy/farmer/ai-assistant';
+      else if (currentUser === 'SUPPLY') defaultPath = '/farmeasy/supply/products';
 
-
-      if (!pathname.startsWith(expectedPathPrefix) && pathname !== '/login') {
-        // Redirect to the correct dashboard if not already there
+      if (!pathname.startsWith(expectedPathPrefix) && pathname !== loginPath) {
         router.replace(defaultPath);
       }
-    } else if (pathname !== '/login') {
-      // No user in session and not on login page, redirect to login
-      router.replace('/login');
+    } else if (!pathname.startsWith('/farmeasy')) {
+        // If not logged in and not in a farmeasy path, do nothing (allow cyberhertz pages)
     }
-    setIsLoading(false); // Finished checking
+    else if (pathname !== loginPath) {
+      router.replace(loginPath);
+    }
+    setIsLoading(false);
   }, [pathname, router]);
 
   const login = useCallback((type: UserType) => {
     if (type) {
-      syncState(type, type); // Use the type itself as a simple ID
+      syncState(type, type);
     } else {
         syncState(null, null);
     }
-    // Redirect happens in the LoginForm after successful login now
   }, [syncState]);
 
   const logout = useCallback(() => {
-    syncState(null, null); // Clear session state
-    // Also clear any cart context if implemented separately
-    router.push('/login'); // Redirect to login page
+    syncState(null, null);
+    router.push('/farmeasy/login');
   }, [router, syncState]);
 
   const isAuthenticated = !!userType;
