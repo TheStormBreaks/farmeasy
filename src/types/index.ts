@@ -1,4 +1,6 @@
 
+import { z } from 'zod';
+
 export type UserType = 'KVK' | 'FARMER' | 'SUPPLY' | null;
 
 export type LanguageCode = 'en' | 'hi' | 'kn' | 'ma';
@@ -64,3 +66,18 @@ export interface Registration {
     mobileNumber: string;
     registrationTimestamp: number; // When the farmer registered
 }
+
+// AI Assistant Types
+export const FarmerAssistantInputSchema = z.object({
+  question: z.string().describe("The farmer's question in text form."),
+  photoDataUri: z
+    .string()
+    .optional()
+    .describe(
+      "An optional photo of a plant, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
+  language: z.enum(['en', 'hi', 'kn', 'ma']).describe("The language for the response (English, Hindi, Kannada, or Maithili).")
+});
+export type FarmerAssistantInput = z.infer<typeof FarmerAssistantInputSchema>;
+
+export type FarmerAssistantOutput = string;
